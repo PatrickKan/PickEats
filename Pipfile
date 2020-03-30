@@ -4,6 +4,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
+autopep8 = "*"
 
 [packages]
 django = "*"
@@ -11,4 +13,4 @@ djangorestframework = "*"
 django-rest-knox = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.6"
