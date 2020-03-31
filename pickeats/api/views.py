@@ -2,10 +2,10 @@
 from rest_framework import viewsets, permissions
 
 from .serializers import TodoSerializer
+from pickeatscrud.settings import MONGO_CONFIG
 # from todos.models import Todo
 
-
-# client = MongoClient('mongodb://127.0.0.1:27017/') # TODO: Change this to actual IP and port
+# client = MongoClient(MONGODB_CONFIG)
 # db = client.pickeats # TODO: Change this to actual mongodb database name
 
 """
