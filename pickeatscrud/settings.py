@@ -1,5 +1,5 @@
 """
-Django settings for todocrud project.
+Django settings for pickeatscrud project.
 """
 
 import os
@@ -25,7 +25,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'frontend.apps.FrontendConfig',
-    'todos.apps.TodosConfig',
+    'pickeats.apps.PickeatsConfig',
     'rest_framework',
     'knox',
     'django.contrib.admin',
@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'todocrud.urls'
+ROOT_URLCONF = 'pickeatscrud.urls'
 
 TEMPLATES = [
     {
@@ -64,7 +64,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'todocrud.wsgi.application'
+WSGI_APPLICATION = 'pickeatscrud.wsgi.application'
 
 
 # Database
