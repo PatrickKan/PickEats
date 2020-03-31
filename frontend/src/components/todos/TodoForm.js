@@ -1,51 +1,106 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import * as Survey from "survey-react";
+import "survey-react/survey.css";
+
 
 class TodoForm extends Component {
-  renderField = ({ input, label, meta: { touched, error } }) => {
-    return (
-      <div className={`field ${touched && error ? 'error' : ''}`}>
-        <label>{label}</label>
-        <input {...input} autoComplete='off' />
-        {touched && error && (
-          <span className='ui pointing red basic label'>{error}</span>
-        )}
-      </div>
-    );
-  };
+ 
+  // json = {
+  //   elements: [
+  //    { type: "text", name: "customerName", title: "What is your name?", isRequired: true}
+  //   ]
+  //  };
+  
+  json = {
+    "pages": [
+     {
+      "name": "page1",
+      "elements": [
+       {
+        "type": "text",
+        "name": "question1",
+        "title": "What type of food do you want to eat?",
+        "placeHolder": "burgers, Chinese food, etc..."
+       },
+       {
+        "type": "checkbox",
+        "name": "question2",
+        "title": "Price Range?",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "$"
+         },
+         {
+          "value": "item2",
+          "text": "$$"
+         },
+         {
+          "value": "item3",
+          "text": "$$$"
+         },
+         {
+          "value": "item4",
+          "text": "$$$$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "question3",
+        "title": "How far are you willing to go?",
+        "placeHolder": "enter distance in miles"
+       },
+       {
+        "type": "text",
+        "name": "question4",
+        "title": "Any nutrition goals?"
+       },
+       {
+        "type": "text",
+        "name": "question5",
+        "title": "Any dietary allergies?",
+        "placeHolder": "nuts, shellfish, etc."
+       }
+      ]
+     }
+    ]
+   };
 
-  onSubmit = formValues => {
-    this.props.onSubmit(formValues);
-  };
-
-  render() {
-    const btnText = `${this.props.initialValues ? 'Update' : 'Add'}`;
-    return (
-      <div className='ui segment'>
-        <form
-          onSubmit={this.props.handleSubmit(this.onSubmit)}
-          className='ui form error'
-        >
-          <Field name='task' component={this.renderField} label='Task' />
-          <button className='ui primary button'>{btnText}</button>
-        </form>
-      </div>
-    );
-  }
+   //Define a callback methods on survey complete
+   onComplete(survey, options) {
+    //Write survey results into database
+    console.log("Survey results: " + JSON.stringify(survey.data));
+   }
+   render() {
+    
+    //Create the model and pass it into react Survey component
+    //You may create survey model outside the render function and use it in your App or component
+    //The most model properties are reactive, on their change the component will change UI when needed.
+    var model = new Survey.Model(this.json);
+    return (<Survey.Survey model={model} onComplete={this.onComplete}/>);
+    /*
+    //The alternative way. react Survey component will create survey model internally
+    return (<Survey.Survey json={this.json} onComplete={this.onComplete}/>);
+    */
+    //You may pass model properties directly into component or set it into model
+    // <Survey.Survey model={model} mode="display"/>
+    //or 
+    // model.mode="display"
+    // <Survey.Survey model={model}/>
+    // You may change model properties outside render function. 
+    //If needed react Survey Component will change its behavior and change UI.
+   }
 }
 
-const validate = formValues => {
-  const errors = {};
-
-  if (!formValues.task) {
-    errors.task = 'Please enter at least 1 character';
-  }
-
-  return errors;
-};
-
 export default reduxForm({
-  form: 'todoForm',
-  touchOnBlur: false,
-  validate
+  form: 'todoForm'
 })(TodoForm);
+
+
+
+
+
+
+

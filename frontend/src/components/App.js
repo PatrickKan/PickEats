@@ -11,6 +11,7 @@ import TodoEdit from './todos/TodoEdit';
 import RegisterForm from './auth/RegisterForm';
 import LoginForm from './auth/LoginForm';
 import PrivateRoute from './common/PrivateRoute';
+import TodoForm from './todos/TodoForm';
 
 import { Provider } from 'react-redux';
 import store from '../store';
@@ -32,6 +33,7 @@ class App extends Component {
             <Route exact path='/edit/:id' component={TodoEdit} />
             <Route exact path='/register' component={RegisterForm} />
             <Route exact path='/login' component={LoginForm} />
+            <Route exact path='/form' component={TodoForm} />
           </Switch>
         </Router>
       </Provider>
