@@ -12,6 +12,7 @@ rope = "*"
 django = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
+pymongo = "*"
 
 [requires]
 python_version = "3.7"
