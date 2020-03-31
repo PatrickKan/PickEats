@@ -1,3 +1,6 @@
+# VScode
+.vscode/
+
 ### Django ###
 *.log
 *.pot
