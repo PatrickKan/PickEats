@@ -10,3 +10,7 @@ class Todo(models.Model):
 
     def __str__(self):
         return self.task
+
+class Preference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    description = models.CharField(max_length=255)
