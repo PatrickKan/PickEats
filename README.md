@@ -15,7 +15,7 @@ Django REST framework documentation here: https://www.django-rest-framework.org/
         * POST /logout/
             * Pass in auth token
         * GET /user/
-            * Gets username, email, user id of a specific user
+            * Gets username, email
         * Planned:
         * GET /all (requires auth) (MAYBE)
             * Gets info on all users

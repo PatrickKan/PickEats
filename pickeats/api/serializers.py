@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from pickeats.models import Todo, Preference
+from pickeats.models import Todo, Preference, Profile
 
 
 class TodoSerializer(serializers.ModelSerializer):
@@ -11,4 +11,9 @@ class TodoSerializer(serializers.ModelSerializer):
 class PreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Preference
-        fields = '__all__'
+        exclude = ['user']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        exclude = ['user', 'id']

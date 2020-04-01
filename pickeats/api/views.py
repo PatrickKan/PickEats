@@ -1,10 +1,10 @@
 # from pymongo import MongoClient
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 
 from pickeatscrud.settings import MONGO_CONFIG
 
-from .serializers import TodoSerializer, PreferenceSerializer
-from ..models import Preference
+from .serializers import TodoSerializer, PreferenceSerializer, ProfileSerializer
+from ..models import Preference, Profile
 # from todos.models import Todo
 
 # client = MongoClient(MONGODB_CONFIG)
@@ -29,6 +29,15 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
 
 
 class TodoViewSet(viewsets.ModelViewSet):
