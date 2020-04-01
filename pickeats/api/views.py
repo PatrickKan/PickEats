@@ -6,6 +6,8 @@ from yelp.client import Client
 from pickeatscrud.settings import YELP_API_KEY
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
+import json
 from django.http import HttpResponse
 import requests
 import argparse
@@ -62,6 +64,20 @@ class TodoViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-class YelpDataList(APIView):
-    def get(self, request, format=None):
+def handleYelpPost(request):
+    print(json.loads(request.body))
+    # data = json.loads(request.POST['data'])
+    # return Response(data)
+
+@api_view(['GET', 'POST'])
+def YelpDataList(request):
+    if request.method == 'GET':
         return HttpResponse(get_request(API_HOST, SEARCH_PATH, YELP_API_KEY, URL_PARAMS), content_type='application/json')
+    else:
+        handleYelpPost(request)
+        return Response(json.loads(request.body))
+        # return HttpResponse("OK")
+    # def get(self, request, format=None):
+    #     return HttpResponse(get_request(API_HOST, SEARCH_PATH, YELP_API_KEY, URL_PARAMS), content_type='application/json')
+    # def post(self, request, *args, **kwargs):
+    #     return Response({'message':'hello'})

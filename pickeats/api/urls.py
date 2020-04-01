@@ -7,5 +7,5 @@ router = routers.DefaultRouter()
 router.register('todos', TodoViewSet, 'todos')
 
 urlpatterns = router.urls + [
-    path('yelp/', YelpDataList.as_view())
+    path('yelp/', YelpDataList, name='yelp')
 ]
