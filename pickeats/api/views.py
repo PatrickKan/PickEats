@@ -3,8 +3,8 @@ from rest_framework import viewsets, permissions, generics
 
 from pickeatscrud.settings import MONGO_CONFIG
 
-from .serializers import TodoSerializer, PreferenceSerializer, ProfileSerializer
-from ..models import Preference, Profile
+from .serializers import TodoSerializer, PreferenceSerializer, ProfileSerializer, AllergySerializer, GoalSerializer
+from ..models import Preference, Profile, Allergy, Goal
 # from todos.models import Todo
 
 # client = MongoClient(MONGODB_CONFIG)
@@ -38,6 +38,30 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+
+
+class AllergyViewSet(viewsets.ModelViewSet):
+    queryset = Allergy.objects.all()
+    serializer_class = AllergySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.allergy_set.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class GoalViewSet(viewsets.ModelViewSet):
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return self.request.user.goal_set.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class TodoViewSet(viewsets.ModelViewSet):

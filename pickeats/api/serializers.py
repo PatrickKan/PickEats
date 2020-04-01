@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from pickeats.models import Todo, Preference, Profile
+from pickeats.models import Todo, Preference, Profile, Allergy, Goal
 
 
 class TodoSerializer(serializers.ModelSerializer):
@@ -17,3 +17,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         exclude = ['user', 'id']
+
+class AllergySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allergy
+        exclude = ['user']
+
+class GoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        exclude = ['user']

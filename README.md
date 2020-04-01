@@ -18,10 +18,7 @@ Django REST framework documentation here: https://www.django-rest-framework.org/
             * Gets username, email
         * Planned:
         * GET /all (requires auth) (MAYBE)
-            * Gets info on all users
-        * PUT /
-            * Update user survey preferences
-            * Changing location, update the cached restaurants? (MAYBE)
+            * Gets info on all user
         * DELETE / (requires admin priviledged account to delete any or delete your own)
             * Deletes user from database
     * User /user (requires auth, accesses logged in user's info)
@@ -29,9 +26,9 @@ Django REST framework documentation here: https://www.django-rest-framework.org/
             * Gets all preferences, or creates a preference
         * GET, PUT, DELETE /prefers/(preference id)/
             * Gets, updates, or deletes a preference
-        * Planned:
         * GET, PUT, PATCH /profile/
             * Gets, updates, or partially updates {latitude, longitude, radius, price} preferences of a user
+            * Planned: update cached restaurants (maybe)
         * /goals/, /goals/(goal id)/
             * Same as /prefers/
         * /allergies/, /allergies/(allergy id)/

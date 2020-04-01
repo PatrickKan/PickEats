@@ -31,3 +31,11 @@ class Profile(models.Model):
     price_2 = models.BooleanField(default=True)
     price_3 = models.BooleanField(default=True)
     price_4 = models.BooleanField(default=True)
+
+class Allergy(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    description = models.CharField(max_length=255)
+
+class Goal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    description = models.CharField(max_length=255)
