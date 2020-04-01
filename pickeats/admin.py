@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Preference, Profile, Allergy, Goal
 
-# Register your models here.
+admin.site.register(Preference)
+admin.site.register(Profile)
+admin.site.register(Allergy)
+admin.site.register(Goal)

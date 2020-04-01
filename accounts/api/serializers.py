@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
+from pickeats.models import Profile
+
 User._meta.get_field('email')._unique = True
 
 
@@ -24,6 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             validated_data['email'],
             validated_data['password']
         )
+        Profile.objects.create(user=user, latitude=40.110558, longitude=-88.228333) # UIUC!
         return user
 
 

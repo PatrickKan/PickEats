@@ -7,23 +7,34 @@ Django REST framework documentation here: https://www.django-rest-framework.org/
 
 ## For Developers
 * Endpoints /api
-    * Users /user
-        * POST /register
+    * Authentication /auth
+        * POST /register/
             * Creates an account (requires location)
-        * POST /login
+        * POST /login/
             * Pass in auth token
-        * POST /logout
+        * POST /logout/
             * Pass in auth token
-        * GET /(hashed userid)
-            * Gets all information about a specific user
+        * GET /user/
+            * Gets username, email
+        * Planned:
         * GET /all (requires auth) (MAYBE)
-            * Gets info on all users
-        * PUT /(hashed userid)
-            * Update user survey preferences
-            * Changing location, update the cached restaurants? (MAYBE)
-        * DELETE /(hashed user id) (requires admin priviledged account to delete any or delete your own)
+            * Gets info on all user
+        * DELETE / (requires admin priviledged account to delete any or delete your own)
             * Deletes user from database
-    * Restaurants /recs
+    * User /user (requires auth, accesses logged in user's info)
+        * GET, POST /prefers/
+            * Gets all preferences, or creates a preference
+        * GET, PUT, DELETE /prefers/(preference id)/
+            * Gets, updates, or deletes a preference
+        * GET, PUT, PATCH /profile/
+            * Gets, updates, or partially updates {latitude, longitude, radius, price} preferences of a user
+            * Planned: update cached restaurants (maybe)
+        * /goals/, /goals/(goal id)/
+            * Same as /prefers/
+        * /allergies/, /allergies/(allergy id)/
+            * Same as /prefers/
+    * Restaurants /recs 
+        * Planned:
         * GET / (hashed user id) (batch number)
             * Get a batch of recommendations for specific user
         * POST / (hashed user id)
