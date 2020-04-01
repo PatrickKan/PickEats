@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions
 
-from .serializers import TodoSerializer
+from .serializers import TodoSerializer, YelpSerializer
 # from todos.models import Todo
 from yelp.client import Client
 from pickeatscrud.settings import YELP_API_KEY
@@ -75,7 +75,12 @@ def YelpDataList(request):
         return HttpResponse(get_request(API_HOST, SEARCH_PATH, YELP_API_KEY, URL_PARAMS), content_type='application/json')
     else:
         handleYelpPost(request)
-        return Response(json.loads(request.body))
+        yelpSer = YelpSerializer(data=request.data)
+
+        if yelpSer.is_valid():
+            return Response(json.loads(request.body))
+        else:
+            return Response("Please send a valid payload.")
         # return HttpResponse("OK")
     # def get(self, request, format=None):
     #     return HttpResponse(get_request(API_HOST, SEARCH_PATH, YELP_API_KEY, URL_PARAMS), content_type='application/json')
