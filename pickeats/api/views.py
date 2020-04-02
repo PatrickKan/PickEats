@@ -14,49 +14,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import json
 from django.http import HttpResponse
-import requests
-import argparse
+
 import json
-import pprint
-import sys
-import urllib
 
-from urllib.error import HTTPError
-from urllib.parse import quote
-from urllib.parse import urlencode
+from .requestHelpers import yelp_get_request
 
-client = Client(YELP_API_KEY)
-API_HOST = 'https://api.yelp.com'
-SEARCH_PATH = '/v3/businesses/search'
-URL_PARAMS = {
-'term': 'boba',
-'longitude': 0,
-'latitude': 0
-}
-
-def get_request(host, path, api_key, url_params=None):
-    """Given your API_KEY, send a GET request to the API.
-    Args:
-        host (str): The domain host of the API.
-        path (str): The path of the API after the domain.
-        API_KEY (str): Your API Key.
-        url_params (dict): An optional set of query parameters in the request.
-    Returns:
-        dict: The JSON response from the request.
-    Raises:
-        HTTPError: An error occurs from the HTTP request.
-    """
-    url_params = url_params or {}
-    url = '{0}{1}'.format(host, quote(path.encode('utf8')))
-    headers = {
-        'Authorization': 'Bearer %s' % api_key,
-    }
-
-    print(u'Querying {0} ...'.format(url))
-
-    response = requests.request('GET', url, headers=headers, params=url_params)
-
-    return response
 # client = MongoClient(MONGODB_CONFIG)
 # db = client.pickeats # TODO: Change this to actual mongodb database name
 
@@ -130,20 +92,34 @@ def handleYelpPost(request):
     # data = json.loads(request.POST['data'])
     # return Response(data)
 
+def constructYelpParams(user):
+    profile = user.profile
+    params = {
+        'longitude': profile.longitude,
+        'latitude': profile.latitude
+    }
+    return params
+
 @api_view(['GET', 'POST'])
 def YelpDataList(request):
-    if request.method == 'GET':
-        return HttpResponse(get_request(API_HOST, SEARCH_PATH, YELP_API_KEY, URL_PARAMS), content_type='application/json')
-    else:
-        handleYelpPost(request)
-        yelpSer = YelpSerializer(data=request.data)
 
-        if yelpSer.is_valid():
-            return Response(json.loads(request.body))
-        else:
-            return Response("Please send a valid payload.")
-        # return HttpResponse("OK")
-    # def get(self, request, format=None):
-    #     return HttpResponse(get_request(API_HOST, SEARCH_PATH, YELP_API_KEY, URL_PARAMS), content_type='application/json')
-    # def post(self, request, *args, **kwargs):
-    #     return Response({'message':'hello'})
+    if request.user.is_authenticated and request.method == 'GET':
+        print("AUTHENTICATED USER", request.user.is_authenticated)
+        print(request.user.profile)
+        params = constructYelpParams(request.user)
+        return HttpResponse(yelp_get_request(url_params=params), content_type='application/json')
+    else:
+        print("Anon user")
+
+    if request.method == 'GET':
+        return HttpResponse(yelp_get_request(), content_type='application/json')
+    else: 
+        return Response("Please make a valid request.")
+    # else:
+    #     handleYelpPost(request)
+    #     yelpSer = YelpSerializer(data=request.data)
+
+    #     if yelpSer.is_valid():
+    #         return Response(json.loads(request.body))
+    #     else:
+    #         return Response("Please send a valid payload.")

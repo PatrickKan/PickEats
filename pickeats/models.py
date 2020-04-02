@@ -39,3 +39,8 @@ class Allergy(models.Model):
 class Goal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=255)
+
+# class Rec(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+#     id = 
+#     imageUrl = models.CharField(max_length=1023)
