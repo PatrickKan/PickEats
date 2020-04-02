@@ -1,3 +1,9 @@
 from django.shortcuts import render
+from rest_framework import permissions
 
-# Create your views here.
+class IsUser(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if request.user:
+            return obj.user == request.user
+        return False

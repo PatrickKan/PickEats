@@ -79,6 +79,8 @@ DATABASES = {
     }
 }
 
+# MongoDB Config (IP and port)
+MONGO_CONFIG = 'mongodb://127.0.0.1:27017/'  # TODO: Change this to actual IP and port
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
