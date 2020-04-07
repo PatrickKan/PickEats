@@ -18,7 +18,7 @@ export default (state = {}, action) => {
     case GET_RECS:
       return {
         ...state,
-        ..._.mapKeys(action.payload, 'id')
+        ..._.mapKeys(action.payload.businesses, 'id')
       };
     case GET_TODO:
     case ADD_TODO:

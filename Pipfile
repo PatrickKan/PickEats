@@ -13,6 +13,8 @@ django = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
 pymongo = "*"
+yelp = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
