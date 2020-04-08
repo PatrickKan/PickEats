@@ -157,9 +157,9 @@ class PickEatsForm extends Component {
    }
 
    render() {
-    // if(this.state.completed) {
-    //   return <Redirect to='/' />;
-    // }
+    if(this.state.completed) {
+      return <Redirect to='/' />;
+    }
 
     //Create the model and pass it into react Survey component
     //You may create survey model outside the render function and use it in your App or component
