@@ -4,6 +4,7 @@ export const ADD_TODO = 'ADD_TODO';
 export const DELETE_TODO = 'DELETE_TODO';
 export const EDIT_TODO = 'EDIT_TODO';
 export const GET_RECS = 'GET_RECS';
+export const POST_PREFERENCES = 'POST_PREFERENCES';
 
 export const USER_LOADING = 'USER_LOADING';
 export const USER_LOADED = 'USER_LOADED';

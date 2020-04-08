@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
-
+import axios from 'axios';
+import { tokenConfig } from '../../actions/auth';
+import {postPreferences} from '../../actions/form'
+import { connect } from 'react-redux';
 
 class TodoForm extends Component {
  
@@ -71,7 +74,29 @@ class TodoForm extends Component {
    //Define a callback methods on survey complete
    onComplete(survey, options) {
     //Write survey results into database
-    console.log("Survey results: " + JSON.stringify(survey.data));
+    console.log("Survey results: " + JSON.stringify(survey.data.question1));
+    
+    const token = localStorage.token;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+        
+      },
+      description: survey.data.question1
+      
+    };
+
+  
+    if (token) {
+      config.headers['Authorization'] = `Token ${token}`;
+    }
+    console.log(token);
+    axios.post('/api/user/prefers/', survey.data.question1, token).then(function (response) {
+      
+      console.log(response);
+    });
+    
+
    }
    render() {
     
@@ -94,9 +119,21 @@ class TodoForm extends Component {
    }
 }
 
+const mapStateToProps = state => ({
+  recs: Object.values(state.todos)
+});
+
+TodoForm = connect(
+  mapStateToProps,
+  { postPreferences }
+)(TodoForm);
+
 export default reduxForm({
-  form: 'todoForm'
+  form: 'TodoForm'
 })(TodoForm);
+
+
+
 
 
 
