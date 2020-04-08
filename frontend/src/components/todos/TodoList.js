@@ -21,7 +21,7 @@ class TodoList extends Component {
                 Delete
               </Link>
             </div>
-            <i className='large calendar outline middle aligned icon' />
+            <i className='star icon' />
             <div className='content'>
               <Link to={`/edit/${todo.id}`} className='header'>
                 {todo.description}
