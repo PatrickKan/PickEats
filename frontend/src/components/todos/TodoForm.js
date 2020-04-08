@@ -70,17 +70,13 @@ class TodoForm extends Component {
     ]
    };
 
-   //Define a callback methods on survey complete
    onComplete = (survey, options) => {
     //Write survey results into database
     console.log("Survey results: " + JSON.stringify(survey.data));
-    // this.setState(state )
-    
     this.setState({completed: true});
    }
-   
+
    render() {
-    
     if(this.state.completed) {
       return <Redirect to='/' />;
     }
