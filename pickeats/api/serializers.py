@@ -8,6 +8,8 @@ class TodoSerializer(serializers.ModelSerializer):
         model = Todo
         fields = '__all__'
 
+class YelpSerializer(serializers.Serializer):
+    term = serializers.CharField(required=True)
 class PreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Preference

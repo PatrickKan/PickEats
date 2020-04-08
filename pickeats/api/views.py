@@ -1,11 +1,23 @@
 # from pymongo import MongoClient
 from rest_framework import viewsets, permissions, generics
 
+from .serializers import TodoSerializer, YelpSerializer
 from pickeatscrud.settings import MONGO_CONFIG
 
 from .serializers import TodoSerializer, PreferenceSerializer, ProfileSerializer, AllergySerializer, GoalSerializer
 from ..models import Preference, Profile, Allergy, Goal
 # from todos.models import Todo
+from yelp.client import Client
+from pickeatscrud.settings import YELP_API_KEY
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+import json
+from django.http import HttpResponse
+
+import json
+
+from .requestHelpers import yelp_get_request
 
 # client = MongoClient(MONGODB_CONFIG)
 # db = client.pickeats # TODO: Change this to actual mongodb database name
@@ -74,3 +86,40 @@ class TodoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+def handleYelpPost(request):
+    print(json.loads(request.body))
+    # data = json.loads(request.POST['data'])
+    # return Response(data)
+
+def constructYelpParams(user):
+    profile = user.profile
+    params = {
+        'longitude': profile.longitude,
+        'latitude': profile.latitude
+    }
+    return params
+
+@api_view(['GET', 'POST'])
+def YelpDataList(request):
+
+    if request.user.is_authenticated and request.method == 'GET':
+        print("AUTHENTICATED USER", request.user.is_authenticated)
+        print(request.user.profile)
+        params = constructYelpParams(request.user)
+        return HttpResponse(yelp_get_request(url_params=params), content_type='application/json')
+    else:
+        print("Anon user")
+
+    if request.method == 'GET':
+        return HttpResponse(yelp_get_request(), content_type='application/json')
+    else: 
+        return Response("Please make a valid request.")
+    # else:
+    #     handleYelpPost(request)
+    #     yelpSer = YelpSerializer(data=request.data)
+
+    #     if yelpSer.is_valid():
+    #         return Response(json.loads(request.body))
+    #     else:
+    #         return Response("Please send a valid payload.")

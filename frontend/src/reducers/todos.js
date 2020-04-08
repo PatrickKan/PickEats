@@ -4,7 +4,8 @@ import {
   GET_TODO,
   ADD_TODO,
   DELETE_TODO,
-  EDIT_TODO
+  EDIT_TODO,
+  GET_RECS
 } from '../actions/types';
 
 export default (state = {}, action) => {
@@ -13,6 +14,11 @@ export default (state = {}, action) => {
       return {
         ...state,
         ..._.mapKeys(action.payload, 'id')
+      };
+    case GET_RECS:
+      return {
+        ...state,
+        ..._.mapKeys(action.payload.businesses, 'id')
       };
     case GET_TODO:
     case ADD_TODO:
