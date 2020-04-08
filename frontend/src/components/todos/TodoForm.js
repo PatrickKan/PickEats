@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
+import { Redirect } from 'react-router-dom';
 
 
 class TodoForm extends Component {
- 
-  // json = {
-  //   elements: [
-  //    { type: "text", name: "customerName", title: "What is your name?", isRequired: true}
-  //   ]
-  //  };
-  
+   
+  // state = { completed: false };
+
+  constructor(props) {
+    super(props);
+    this.state = {completed: false};
+  }
+
   json = {
     "pages": [
      {
@@ -69,12 +71,20 @@ class TodoForm extends Component {
    };
 
    //Define a callback methods on survey complete
-   onComplete(survey, options) {
+   onComplete = (survey, options) => {
     //Write survey results into database
     console.log("Survey results: " + JSON.stringify(survey.data));
+    // this.setState(state )
+    
+    this.setState({completed: true});
    }
+   
    render() {
     
+    if(this.state.completed) {
+      return <Redirect to='/' />;
+    }
+
     //Create the model and pass it into react Survey component
     //You may create survey model outside the render function and use it in your App or component
     //The most model properties are reactive, on their change the component will change UI when needed.
