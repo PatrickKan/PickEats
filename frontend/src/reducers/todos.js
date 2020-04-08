@@ -5,7 +5,8 @@ import {
   ADD_TODO,
   DELETE_TODO,
   EDIT_TODO,
-  GET_RECS
+  GET_RECS,
+  POST_PREFERENCES
 } from '../actions/types';
 
 export default (state = {}, action) => {
@@ -31,5 +32,10 @@ export default (state = {}, action) => {
       return _.omit(state, action.payload);
     default:
       return state;
+    case POST_PREFERENCES:
+      return {
+        ...state,
+        [action.payload.id]: action.payload
+      };
   }
 };

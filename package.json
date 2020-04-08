@@ -16,7 +16,9 @@
     "@babel/preset-env": "^7.7.6",
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
-    "webpack": "^4.41.2",
+    "css-loader": "^3.5.1",
+    "ts-loader": "^6.2.2",
+    "webpack": "4.28.4",
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
@@ -34,6 +36,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-form": "^8.2.6",
     "redux-thunk": "^2.3.0",
-    "serialize-javascript": "^2.1.2"
+    "serialize-javascript": "^2.1.2",
+    "survey-react": "^1.5.17"
   }
 }
