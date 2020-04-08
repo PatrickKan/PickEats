@@ -26,7 +26,7 @@ class TodoForm extends Component {
           onSubmit={this.props.handleSubmit(this.onSubmit)}
           className='ui form error'
         >
-          <Field name='task' component={this.renderField} label='Task' />
+          <Field name='description' component={this.renderField} label='Description' />
           <button className='ui primary button'>{btnText}</button>
         </form>
       </div>
@@ -37,8 +37,8 @@ class TodoForm extends Component {
 const validate = formValues => {
   const errors = {};
 
-  if (!formValues.task) {
-    errors.task = 'Please enter at least 1 character';
+  if (!formValues.description) {
+    errors.description = 'Please enter at least 1 character';
   }
 
   return errors;

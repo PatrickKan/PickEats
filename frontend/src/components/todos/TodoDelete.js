@@ -12,9 +12,9 @@ class TodoDelete extends Component {
 
   renderContent() {
     if (!this.props.todo) {
-      return 'Are you sure you want to delete this task?';
+      return 'Are you sure you want to delete this preference?';
     }
-    return `Are you sure you want to delete the task: ${this.props.todo.task}`;
+    return `Are you sure you want to delete the preference: ${this.props.todo.description}`;
   }
 
   renderActions() {
@@ -27,7 +27,7 @@ class TodoDelete extends Component {
         >
           Delete
         </button>
-        <Link to='/' className='ui button'>
+        <Link to='/profile' className='ui button'>
           Cancel
         </Link>
       </Fragment>
@@ -40,7 +40,7 @@ class TodoDelete extends Component {
         title='Delete Todo'
         content={this.renderContent()}
         actions={this.renderActions()}
-        onDismiss={() => history.push('/')}
+        onDismiss={() => history.push('/profile')}
       />
     );
   }

@@ -6,7 +6,7 @@ import { GET_TODOS, GET_TODO, ADD_TODO, DELETE_TODO, EDIT_TODO } from './types';
 
 // GET TODOS
 export const getTodos = () => async (dispatch, getState) => {
-  const res = await axios.get('/api/todos/', tokenConfig(getState));
+  const res = await axios.get('/api/user/prefers/', tokenConfig(getState));
   dispatch({
     type: GET_TODOS,
     payload: res.data
@@ -15,7 +15,7 @@ export const getTodos = () => async (dispatch, getState) => {
 
 // GET TODO
 export const getTodo = id => async (dispatch, getState) => {
-  const res = await axios.get(`/api/todos/${id}/`, tokenConfig(getState));
+  const res = await axios.get(`/api/user/prefers/${id}/`, tokenConfig(getState));
   dispatch({
     type: GET_TODO,
     payload: res.data
@@ -25,7 +25,7 @@ export const getTodo = id => async (dispatch, getState) => {
 // ADD TODO
 export const addTodo = formValues => async (dispatch, getState) => {
   const res = await axios.post(
-    '/api/todos/',
+    '/api/user/prefers/',
     { ...formValues },
     tokenConfig(getState)
   );
@@ -38,18 +38,18 @@ export const addTodo = formValues => async (dispatch, getState) => {
 
 // DELETE TODO
 export const deleteTodo = id => async (dispatch, getState) => {
-  await axios.delete(`/api/todos/${id}/`, tokenConfig(getState));
+  await axios.delete(`/api/user/prefers/${id}/`, tokenConfig(getState));
   dispatch({
     type: DELETE_TODO,
     payload: id
   });
-  history.push('/');
+  history.push('/profile');
 };
 
 // EDIT TODO
 export const editTodo = (id, formValues) => async (dispatch, getState) => {
   const res = await axios.patch(
-    `/api/todos/${id}/`,
+    `/api/user/prefers/${id}/`,
     formValues,
     tokenConfig(getState)
   );
@@ -57,5 +57,5 @@ export const editTodo = (id, formValues) => async (dispatch, getState) => {
     type: EDIT_TODO,
     payload: res.data
   });
-  history.push('/');
+  history.push('/profile');
 };
