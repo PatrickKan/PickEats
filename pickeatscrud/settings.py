@@ -14,6 +14,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'ame^!skljy&q!ek7)%*h+6c6v@cfm)z-20+mrt$=*51b5m0l2@'
 
+YELP_API_KEY = "kc6SbepjKYgBBbvCuirwWIIlQLiEWEVs7zC-brmY176nn-LFfv_Runij6G3_Wto2D1TCpwjtqZTHN9ILz1QM3uhqVY36HBdL0Uexe2njo4NDo9YtadXzVWJ-DtOCXnYx"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -77,6 +79,8 @@ DATABASES = {
     }
 }
 
+# MongoDB Config (IP and port)
+MONGO_CONFIG = 'mongodb://127.0.0.1:27017/'  # TODO: Change this to actual IP and port
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
