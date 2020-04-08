@@ -43,7 +43,7 @@ export const deleteTodo = id => async (dispatch, getState) => {
     type: DELETE_TODO,
     payload: id
   });
-  history.push('/');
+  history.push('/profile');
 };
 
 // EDIT TODO
@@ -57,5 +57,5 @@ export const editTodo = (id, formValues) => async (dispatch, getState) => {
     type: EDIT_TODO,
     payload: res.data
   });
-  history.push('/');
+  history.push('/profile');
 };

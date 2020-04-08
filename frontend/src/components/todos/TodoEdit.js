@@ -19,7 +19,7 @@ class TodoEdit extends Component {
     // }
     return (
       <div className='ui container'>
-        <h2 style={{ marginTop: '2rem' }}>Edit Todo</h2>
+        <h2 style={{ marginTop: '2rem' }}>Edit Preference</h2>
         <TodoForm
           initialValues={_.pick(this.props.todo, 'task')}
           enableReinitialize={true}
