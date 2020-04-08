@@ -38,7 +38,7 @@ class Header extends Component {
     return (
       <div className='ui inverted menu' style={{ borderRadius: '0' }}>
         <Link to='/' className='header item'>
-          TodoCRUD
+          PickEats
         </Link>
         <Link to='/' className='item'>
           Home

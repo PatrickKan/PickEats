@@ -41,6 +41,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getTodos, deleteTodo } from '../../actions/todos';
 import { getRecommendations } from '../../actions/yelp';
+import { geolocated } from "react-geolocated";
+import LocationTracker from './Location';
+import { FaUtensils } from "react-icons/fa";
 
 
 class RecPage extends Component {
@@ -51,15 +54,17 @@ class RecPage extends Component {
 
   render() {
     return (
-      <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
-        {this.props.recs.map(rec => (
-          <div className='item' key={rec.id}>
-            <i className='large calendar outline middle aligned icon' />
-            <div className='content'>
-              <div className='description'>{rec.name}</div>
+      <div>
+        <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
+          {this.props.recs.map(rec => (
+            <div className='item' key={rec.id}>
+              <div className='content'>
+                <div className='description'><FaUtensils/>{"  " + rec.name}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <LocationTracker/>
       </div>
     );
   }
