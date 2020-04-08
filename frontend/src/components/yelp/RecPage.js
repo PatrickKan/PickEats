@@ -42,7 +42,8 @@ import { Link } from 'react-router-dom';
 import { getTodos, deleteTodo } from '../../actions/todos';
 import { getRecommendations } from '../../actions/yelp';
 import { geolocated } from "react-geolocated";
-import Location from './Location';
+import LocationTracker from './Location';
+import { FaUtensils } from "react-icons/fa";
 
 
 class RecPage extends Component {
@@ -57,14 +58,13 @@ class RecPage extends Component {
         <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
           {this.props.recs.map(rec => (
             <div className='item' key={rec.id}>
-              <i className='large calendar outline middle aligned icon' />
               <div className='content'>
-                <div className='description'>{rec.name}</div>
+                <div className='description'><FaUtensils/>{"  " + rec.name}</div>
               </div>
             </div>
           ))}
         </div>
-        <Location/>
+        <LocationTracker/>
       </div>
     );
   }
