@@ -86,16 +86,14 @@ class TodoForm extends Component {
     };
   
     const body = {
-      description: JSON.stringify(survey.data.question1)
+      description: survey.data.question1
     }
-
-    print(survey.data.question1)
 
     if (token) {
       config.headers['Authorization'] = `Token ${token}`;
     }
     console.log(token);
-    axios.post('http://localhost:8000/api/user/prefers/', body, config).then(function (response) { 
+    axios.post('/api/user/prefers/', body, config).then(function (response) { 
       console.log(response);
     });
 
