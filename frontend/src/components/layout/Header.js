@@ -13,6 +13,9 @@ class Header extends Component {
           {user ? user.username : ''}
           <i className='dropdown icon' />
           <div className='menu'>
+            <Link to='/profile' className='item'>
+              Edit Profile
+            </Link>
             <a onClick={this.props.logout} className='item'>
               Logout
             </a>
@@ -35,7 +38,7 @@ class Header extends Component {
     return (
       <div className='ui inverted menu' style={{ borderRadius: '0' }}>
         <Link to='/' className='header item'>
-          TodoCRUD
+          PickEats
         </Link>
         <Link to='/' className='item'>
           Home

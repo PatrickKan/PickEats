@@ -30,6 +30,7 @@ class App extends Component {
           <Header />
           <Switch>
             <PrivateRoute exact path='/' component={MainPage} />
+            <Route exact path = '/profile' component={Dashboard} />
             <Route exact path='/delete/:id' component={TodoDelete} />
             <Route exact path='/edit/:id' component={TodoEdit} />
             <Route exact path='/register' component={RegisterForm} />
