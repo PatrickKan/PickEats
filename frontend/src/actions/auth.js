@@ -94,6 +94,8 @@ export const tokenConfig = getState => {
   // Get token
   const token = getState().auth.token;
 
+  console.log(token);
+
   // Headers
   const config = {
     headers: {
