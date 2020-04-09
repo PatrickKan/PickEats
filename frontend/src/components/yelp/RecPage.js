@@ -57,11 +57,12 @@ class RecPage extends Component {
       <div>
         <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
           {this.props.recs.map(rec => (
-            <div className='item' key={rec.id}>
-              <div className='content'>
-                <div className='description'><FaUtensils/>{"  " + rec.name}</div>
-              </div>
-            </div>
+            rec.name ? 
+            ( <div className='item' key={rec.id}>
+                <div className='content'>
+                  <div className='description'><FaUtensils/>{"  " + rec.name}</div>
+                </div>
+              </div> ) : (<div/>)
           ))}
         </div>
         <LocationTracker/>
