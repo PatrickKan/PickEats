@@ -50,7 +50,6 @@ class RecPage extends Component {
   componentDidMount() {
     // this.props.getTodos();
     this.props.getRecommendations();
-    this.forceUpdate();
   }
 
   render() {

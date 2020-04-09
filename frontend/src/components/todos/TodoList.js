@@ -6,7 +6,6 @@ import { getTodos, deleteTodo } from '../../actions/todos';
 class TodoList extends Component {
   componentDidMount() {
     this.props.getTodos();
-    this.forceUpdate();
   }
 
   render() {
