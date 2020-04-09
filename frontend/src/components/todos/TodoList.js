@@ -6,12 +6,14 @@ import { getTodos, deleteTodo } from '../../actions/todos';
 class TodoList extends Component {
   componentDidMount() {
     this.props.getTodos();
+    this.forceUpdate();
   }
 
   render() {
     return (
       <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
         {this.props.todos.map(todo => (
+          todo.description ? (
           <div className='item' key={todo.id}>
             <div className='right floated content'>
               <Link
@@ -28,7 +30,7 @@ class TodoList extends Component {
               </Link>
               <div className='description'>{todo.description}</div>
             </div>
-          </div>
+          </div> ) : (<div/>)
         ))}
       </div>
     );
