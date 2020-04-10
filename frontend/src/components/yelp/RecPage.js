@@ -46,7 +46,6 @@ import LocationTracker from './Location';
 import { FaUtensils } from "react-icons/fa";
 import { Rating } from 'semantic-ui-react';
 import StarRatings from 'react-star-ratings';
-import styles from './mainStyles.css';
 
 class RecPage extends Component {
   componentDidMount() {
