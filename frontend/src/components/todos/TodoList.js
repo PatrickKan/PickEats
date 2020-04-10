@@ -10,7 +10,7 @@ class TodoList extends Component {
 
   render() {
     return (
-      <div className='ui relaxed divided list' style={{ marginTop: '2rem' }}>
+      <div className='ui list' style={{ marginTop: '2rem' }}>
         {this.props.todos.map(todo => (
           todo.description ? (
           <div className='item' key={todo.id}>
