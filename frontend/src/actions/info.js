@@ -10,8 +10,7 @@ export const getInfos = (type) => async (dispatch, getState) => {
   res.data = res.data.map((obj)=>{obj['type']=type; return obj})
   dispatch({
     type: GET_TODOS,
-    payload: res.data,
-    info_type: type
+    payload: res.data
   });
 };
 
@@ -21,8 +20,7 @@ export const getInfo = (type, id) => async (dispatch, getState) => {
   res.data['type'] = type;
   dispatch({
     type: GET_TODO,
-    payload: res.data,
-    info_type: type
+    payload: res.data
   });
 };
 
@@ -36,8 +34,7 @@ export const addInfo = (type, formValues) => async (dispatch, getState) => {
   res.data['type'] = type;
   dispatch({
     type: ADD_TODO,
-    payload: res.data,
-    info_type: type
+    payload: res.data
   });
   dispatch(reset('todoForm')); // フォーム送信後、値をクリアする
 };
@@ -47,7 +44,7 @@ export const deleteInfo = (type, id) => async (dispatch, getState) => {
   await axios.delete(`/api/user/${type}/${id}/`, tokenConfig(getState));
   dispatch({
     type: DELETE_TODO,
-    payload: id
+    payload: type+id
   });
   history.push('/profile');
 };

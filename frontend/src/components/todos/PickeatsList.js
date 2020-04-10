@@ -22,7 +22,7 @@ class PickeatsList extends Component {
                   <Icon name='delete' onClick={()=>this.props.deleteInfo(this.props.type, todo.id)}/>
                 </Label>
               }
-              key={todo.id}
+              key={todo.type+todo.id}
               hoverable
             >
               <Popup.Content>
