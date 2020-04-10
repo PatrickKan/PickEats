@@ -14,7 +14,7 @@ export default (state = {}, action) => {
     case GET_TODOS:
       return {
         ...state,
-        ..._.mapKeys(action.payload, 'id')
+        ..._.mapKeys(action.payload, (value, key)=>value.type+value.id),
       };
     case GET_RECS:
       return {
@@ -22,20 +22,28 @@ export default (state = {}, action) => {
         ..._.mapKeys(action.payload.businesses, 'id')
       };
     case GET_TODO:
+      return {
+        ...state,
+        [action.payload.type+action.payload.id]: action.payload
+      };
     case ADD_TODO:
+      return {
+        ...state,
+        [action.payload.type+action.payload.id]: action.payload
+      };
     case EDIT_TODO:
       return {
         ...state,
-        [action.payload.id]: action.payload
+        [action.payload.type+action.payload.id]: action.payload
       };
     case DELETE_TODO:
       return _.omit(state, action.payload);
-    default:
-      return state;
     case POST_PREFERENCES:
       return {
         ...state,
-        [action.payload.id]: action.payload
+        [action.payload.type+action.payload.id]: action.payload
       };
+    default:
+      return state;
   }
 };

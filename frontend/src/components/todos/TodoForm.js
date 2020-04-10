@@ -21,15 +21,13 @@ class TodoForm extends Component {
   render() {
     const btnText = `${this.props.initialValues ? 'Update' : 'Add'}`;
     return (
-      <div className='ui segment'>
         <form
           onSubmit={this.props.handleSubmit(this.onSubmit)}
           className='ui form error'
         >
-          <Field name='description' component={this.renderField} label='Description' />
-          <button className='ui primary button'>{btnText}</button>
+          <Field name='description' component={this.renderField}/>
+          <button className='ui button red'>{btnText}</button>
         </form>
-      </div>
     );
   }
 }
