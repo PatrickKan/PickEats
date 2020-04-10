@@ -11,7 +11,7 @@ class TodoCreate extends Component {
   render() {
     return (
       <div style={{ marginTop: '2rem' }}>
-        <TodoForm destroyOnUnmount={false} onSubmit={this.onSubmit} form='create'/>
+        <TodoForm destroyOnUnmount={false} onSubmit={this.onSubmit} form={'create' + this.props.id}/>
       </div>
     );
   }

@@ -26,7 +26,7 @@ class PickeatsList extends Component {
               hoverable
             >
               <Popup.Content>
-                <PickeatsEdit id={todo.id}/>
+                <PickeatsEdit id={this.props.id+todo.id}/>
               </Popup.Content>
             </Popup>
           ) : (<span/>)

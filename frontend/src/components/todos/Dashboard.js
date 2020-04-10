@@ -13,9 +13,23 @@ class Dashboard extends Component {
         <Card.Group>
           <Card fluid>
             <Card.Content>
-              <Header size='medium'>What type of food do you want to eat?</Header>
-              <TodoCreate />
-              <PickeatsList />
+              <Header size='medium'>🌯 What type of food do you want to eat?</Header>
+              <TodoCreate id='prefers'/>
+              <PickeatsList id='prefers'/>
+            </Card.Content>
+          </Card>
+          <Card fluid>
+            <Card.Content>
+              <Header size='medium'>🥅 What are your goals?</Header>
+              <TodoCreate id='goals'/>
+              <PickeatsList id='goals'/>
+            </Card.Content>
+          </Card>
+          <Card fluid>
+            <Card.Content>
+              <Header size='medium'>🙅‍♀️ Do you have any allergies?</Header>
+              <TodoCreate id='allergies'/>
+              <PickeatsList id='allergies'/>
             </Card.Content>
           </Card>
         </Card.Group>
