@@ -46,7 +46,7 @@ import LocationTracker from './Location';
 import { FaUtensils } from "react-icons/fa";
 import { Rating } from 'semantic-ui-react';
 import StarRatings from 'react-star-ratings';
-import './styles.css';
+import styles from './mainStyles.css';
 
 class RecPage extends Component {
   componentDidMount() {
@@ -58,6 +58,11 @@ class RecPage extends Component {
     return (meters/1609.344).toFixed(2);
   }
 
+  imgStyle = {
+      height: 300,
+      objectFit: "cover"
+  }
+
   render() {
     return (
       <div>
@@ -66,7 +71,7 @@ class RecPage extends Component {
             rec.name ? 
             ( <div className='ui card' key={rec.id}>
                 <div class="image">
-                  <img src={rec.image_url} resizeMode="cover" style={{height: 300, backgroundColor: "red" }}/>
+                  <img style={this.imgStyle} src={rec.image_url}/>
                 </div>
                 <div className='content'>
                   <div class="header">{rec.name}</div>
