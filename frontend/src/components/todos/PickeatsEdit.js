@@ -1,25 +1,25 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getTodo, editTodo } from '../../actions/todos';
+import { getInfo, editInfo } from '../../actions/info';
 import TodoForm from './TodoForm';
 
 class PickeatsEdit extends Component {
   componentDidMount() {
-    this.props.getTodo(this.props.id);
+    this.props.getInfo(this.props.type, this.props.id);
   }
 
   onSubmit = formValues => {
-    this.props.editTodo(this.props.id, formValues);
+    this.props.editInfo(this.props.type, this.props.id, formValues);
   };
 
   render() {
     return (
         <TodoForm
-          initialValues={_.pick(this.props.todo, 'task')}
+          initialValues={_.pick(this.props.id, 'description')}
           enableReinitialize={true}
           onSubmit={this.onSubmit}
-          form={'update'+this.props.id}
+          form={'update'+this.props.type+this.props.id}
         />
     );
   }
@@ -31,5 +31,5 @@ const mapStateToProps = (state, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  { getTodo, editTodo }
+  { getInfo, editInfo }
 )(PickeatsEdit);

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getTodos, deleteTodo } from '../../actions/todos';
+import { getInfos, deleteInfo } from '../../actions/info';
 
 import { Label, Icon, Popup } from 'semantic-ui-react';
 import PickeatsEdit from './PickeatsEdit';
 
 class PickeatsList extends Component {
   componentDidMount() {
-    this.props.getTodos();
+    this.props.getInfos(this.props.type);
   }
 
   render() {
@@ -19,14 +19,14 @@ class PickeatsList extends Component {
               trigger={
                 <Label as='a' style={{margin: '0.2rem'}}>
                   {todo.description}
-                  <Icon name='delete' onClick={()=>this.props.deleteTodo(todo.id)}/>
+                  <Icon name='delete' onClick={()=>this.props.deleteInfo(this.props.type, todo.id)}/>
                 </Label>
               }
               key={todo.id}
               hoverable
             >
               <Popup.Content>
-                <PickeatsEdit id={this.props.id+todo.id}/>
+                <PickeatsEdit type={this.props.type} id={todo.id}/>
               </Popup.Content>
             </Popup>
           ) : (<span/>)
@@ -36,11 +36,11 @@ class PickeatsList extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  todos: Object.values(state.todos)
+const mapStateToProps = (state, ownProps) => ({
+  todos: Object.values(state.todos).filter(obj=>obj.type === ownProps.type),
 });
 
 export default connect(
   mapStateToProps,
-  { getTodos, deleteTodo }
+  { getInfos, deleteInfo }
 )(PickeatsList);
