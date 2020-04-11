@@ -8,14 +8,16 @@ from .serializers import TodoSerializer, PreferenceSerializer, ProfileSerializer
 from ..models import Preference, Profile, Allergy, Goal
 # from todos.models import Todo
 from yelp.client import Client
-from pickeatscrud.settings import YELP_API_KEY
+from pickeatscrud.settings import YELP_API_KEY, DATABASES
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-import json
+
 from django.http import HttpResponse
+from django.db import connection
 
 import json
+from collections import namedtuple
 
 from .requestHelpers import yelp_get_request
 
@@ -36,11 +38,45 @@ class PreferenceViewSet(viewsets.ModelViewSet):
     serializer_class = PreferenceSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return self.request.user.preference_set.all()
+    # Django Rest Framework version of SQL queries:
+    # def get_queryset(self):
+    #     return self.request.user.preference_set.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+
+    # Raw SQL queries:
+    def list(self, request):
+        queryset = Preference.objects.raw("SELECT * FROM pickeats_preference WHERE user_id = %s", [request.user.id])
+        return Response(PreferenceSerializer(queryset, many=True).data)
+
+    def create(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO pickeats_preference (description, user_id) VALUES (%s, %s)", [request.data['description'], request.user.id])
+            if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+                cursor.execute("SELECT last_insert_rowid()")
+            elif DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
+                cursor.execute("SELECT LAST_INSERT_ID()")
+            else:
+                raise Exception('Database not supported: look at pickeats/api/views.py')
+            info_id = cursor.fetchone()
+        return Response(data={'id': info_id[0], 'description': request.data['description']})
+
+    def retrieve(self, request, pk=None):
+        queryset = Preference.objects.raw("SELECT * FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response(PreferenceSerializer(queryset, many=True).data[0])
+
+    def partial_update(self, request, pk=None):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE pickeats_preference SET description = %s WHERE user_id = %s AND id = %s", [request.data['description'], request.user.id, pk])
+        queryset = Preference.objects.raw("SELECT * FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response(PreferenceSerializer(queryset, many=True).data[0])
+
+    def destroy(self, request, pk=None):
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response()
+
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
@@ -57,11 +93,44 @@ class AllergyViewSet(viewsets.ModelViewSet):
     serializer_class = AllergySerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return self.request.user.allergy_set.all()
+    # Django Rest Framework version of SQL queries:
+    # def get_queryset(self):
+    #     return self.request.user.allergy_set.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+
+    # Raw SQL queries:
+    def list(self, request):
+        queryset = Allergy.objects.raw("SELECT * FROM pickeats_allergy WHERE user_id = %s", [request.user.id])
+        return Response(AllergySerializer(queryset, many=True).data)
+
+    def create(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO pickeats_allergy (description, user_id) VALUES (%s, %s)", [request.data['description'], request.user.id])
+            if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+                cursor.execute("SELECT last_insert_rowid()")
+            elif DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
+                cursor.execute("SELECT LAST_INSERT_ID()")
+            else:
+                raise Exception('Database not supported: look at pickeats/api/views.py')
+            info_id = cursor.fetchone()
+        return Response(data={'id': info_id[0], 'description': request.data['description']})
+
+    def retrieve(self, request, pk=None):
+        queryset = Allergy.objects.raw("SELECT * FROM pickeats_allergy WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response(AllergySerializer(queryset, many=True).data[0])
+
+    def partial_update(self, request, pk=None):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE pickeats_allergy SET description = %s WHERE user_id = %s AND id = %s", [request.data['description'], request.user.id, pk])
+        queryset = Allergy.objects.raw("SELECT * FROM pickeats_allergy WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response(AllergySerializer(queryset, many=True).data[0])
+
+    def destroy(self, request, pk=None):
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM pickeats_allergy WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response()
 
 
 class GoalViewSet(viewsets.ModelViewSet):
@@ -69,11 +138,44 @@ class GoalViewSet(viewsets.ModelViewSet):
     serializer_class = GoalSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return self.request.user.goal_set.all()
+    # Django Rest Framework version of SQL queries:
+    # def get_queryset(self):
+    #     return self.request.user.goal_set.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+
+    # Raw SQL queries:
+    def list(self, request):
+        queryset = Goal.objects.raw("SELECT * FROM pickeats_goal WHERE user_id = %s", [request.user.id])
+        return Response(GoalSerializer(queryset, many=True).data)
+
+    def create(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("INSERT INTO pickeats_goal (description, user_id) VALUES (%s, %s)", [request.data['description'], request.user.id])
+            if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+                cursor.execute("SELECT last_insert_rowid()")
+            elif DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
+                cursor.execute("SELECT LAST_INSERT_ID()")
+            else:
+                raise Exception('Database not supported: look at pickeats/api/views.py')
+            info_id = cursor.fetchone()
+        return Response(data={'id': info_id[0], 'description': request.data['description']})
+
+    def retrieve(self, request, pk=None):
+        queryset = Goal.objects.raw("SELECT * FROM pickeats_goal WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response(GoalSerializer(queryset, many=True).data[0])
+
+    def partial_update(self, request, pk=None):
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE pickeats_goal SET description = %s WHERE user_id = %s AND id = %s", [request.data['description'], request.user.id, pk])
+        queryset = Goal.objects.raw("SELECT * FROM pickeats_goal WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response(GoalSerializer(queryset, many=True).data[0])
+
+    def destroy(self, request, pk=None):
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM pickeats_goal WHERE user_id = %s AND id = %s", [request.user.id, pk])
+        return Response()
 
 
 class TodoViewSet(viewsets.ModelViewSet):
