@@ -92,11 +92,42 @@ def handleYelpPost(request):
     # data = json.loads(request.POST['data'])
     # return Response(data)
 
+def removeLeadingComma(origStr):
+    if len(origStr) > 0 and origStr[0] == ',':
+        origStr = origStr[1:]
+    return origStr
+
 def constructYelpParams(user):
     profile = user.profile
+    priceString = ""
+    priceString += ("1" if profile.price_1 else "")
+    priceString += (",2" if profile.price_2 else "")
+    priceString += (",3" if profile.price_3 else "")
+    priceString += (",4" if profile.price_4 else "")
+
+    priceString = removeLeadingComma(priceString)
+
+    queryset = Preference.objects.raw("SELECT * FROM pickeats_preference WHERE user_id = %s", [user.id])
+
+    categoryString = ""
+    categorySet = set()
+
+    for pref in queryset:
+        categorySet.add(pref.description)
+        
+    for pref in categorySet:
+        categoryString += "," + pref
+
+    categoryString = removeLeadingComma(categoryString)
+
+    print("Category string: ", categoryString)
+
     params = {
         'longitude': profile.longitude,
-        'latitude': profile.latitude
+        'latitude': profile.latitude,
+        'price': priceString,
+        'radius': profile.radius,
+        'categories': categoryString
     }
     return params
 
