@@ -6,7 +6,12 @@ import { GET_RECS } from './types';
 
 // GET TODOS
 export const getRecommendations = () => async (dispatch, getState) => {
-    const res = await axios.get('/api/yelp/', tokenConfig(getState));
+    var config = tokenConfig(getState);
+    config['params'] = {
+      'offset': 0
+    }
+    console.log(config);
+    const res = await axios.get('/api/yelp', config);
     dispatch({
       type: GET_RECS,
       payload: res.data

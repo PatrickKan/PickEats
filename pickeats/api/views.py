@@ -131,7 +131,7 @@ def constructYelpParams(user):
     }
     return params
 
-def processYelpRequest(res, user):
+def cacheYelpRequest(res, user, offset):
     businesses = []
     try:
         businesses = res.json()["businesses"]
@@ -143,10 +143,11 @@ def processYelpRequest(res, user):
         print("inserting business, user_id=", user.id)
         print("name: ", business['name'])
         business['user_id'] = user.id
+        business['offset'] = offset
         key = { "user_id": user.id, "id": business["id"] }
         db.reviews.update_one(key, {'$set': business}, upsert=True) # Inserts if does not exist, to query use [d for d in db.reviews.find({})]
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def YelpDataList(request):
 
     if request.user.is_authenticated and request.method == 'GET':
@@ -154,10 +155,28 @@ def YelpDataList(request):
         print(request.user.profile)
         params = constructYelpParams(request.user)
 
-        results = yelp_get_request(url_params=params)
+        cachedQuery = ""
 
-        processYelpRequest(results, request.user)
+        try:
+            print("offset is: ", request.GET["offset"])
+            cachedQuery = db.reviews.find({'user_id': request.user.id, 'offset': request.GET["offset"]}, {'_id': 0})
+        except:
+            print("No offset specified")
+            return Response(yelp_get_request(url_params=params), content_type='application/json')
 
+        print("checking if")
+        if cachedQuery.count() > 0:
+            print("cachedQuery")
+            cachedBusinesses = [business for business in cachedQuery]
+            print("businesses", cachedBusinesses)
+            results = {'businesses': cachedBusinesses} # Wrap 'business'
+            return Response(results, content_type='application/json')
+        else:
+            print("Getting from yelp")
+            results = yelp_get_request(url_params=params)
+            cacheYelpRequest(results, request.user, request.GET["offset"])
+            return HttpResponse(results, content_type='application/json')
+        
         # if cached:
             # get from db
         # else:
@@ -179,3 +198,11 @@ def YelpDataList(request):
     #         return Response(json.loads(request.body))
     #     else:
     #         return Response("Please send a valid payload.")
+
+from bson import ObjectId
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
