@@ -14,6 +14,9 @@ class Header extends Component {
           <i className='dropdown icon' />
           <div className='menu'>
             <Link to='/profile' className='item'>
+            Edit Preferences
+            </Link>
+            <Link to='/form' className='item'>
               Edit Profile
             </Link>
             <a onClick={this.props.logout} className='item'>
