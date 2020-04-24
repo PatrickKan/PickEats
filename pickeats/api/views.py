@@ -97,7 +97,7 @@ def removeLeadingComma(origStr):
         origStr = origStr[1:]
     return origStr
 
-def constructYelpParams(user):
+def constructYelpParams(user, offset):
     profile = user.profile
     priceString = ""
     priceString += ("1" if profile.price_1 else "")
@@ -127,7 +127,9 @@ def constructYelpParams(user):
         'latitude': profile.latitude,
         'price': priceString,
         'radius': profile.radius,
-        'categories': categoryString
+        'categories': categoryString,
+        'limit': 50,
+        'offset': offset*50
     }
     return params
 
@@ -153,27 +155,24 @@ def YelpDataList(request):
     if request.user.is_authenticated and request.method == 'GET':
         print("AUTHENTICATED USER", request.user.is_authenticated)
         print(request.user.profile)
-        params = constructYelpParams(request.user)
-
-        cachedQuery = ""
 
         try:
-            print("offset is: ", request.GET["offset"])
-            cachedQuery = db.reviews.find({'user_id': request.user.id, 'offset': request.GET["offset"]}, {'_id': 0})
+            offset = request.GET["offset"]
         except:
-            print("No offset specified")
-            return Response(yelp_get_request(url_params=params), content_type='application/json')
+            offset = 0
+        params = constructYelpParams(request.user, offset)
 
-        print("checking if")
+        cachedQuery = db.reviews.find({'user_id': request.user.id, 'offset': offset}, {'_id': 0})
+
         if cachedQuery.count() > 0:
             print("cachedQuery")
             cachedBusinesses = [business for business in cachedQuery]
             results = {'businesses': cachedBusinesses} # Wrap 'business'
             return Response(results, content_type='application/json')
         else:
-            print("Getting from yelp")
+            print("GET from yelp")
             results = yelp_get_request(url_params=params)
-            cacheYelpRequest(results, request.user, request.GET["offset"])
+            cacheYelpRequest(results, request.user, offset)
             return HttpResponse(results, content_type='application/json')
         
         # if cached:
