@@ -1,4 +1,4 @@
-# from pymongo import MongoClient
+from pymongo import MongoClient
 from rest_framework import viewsets, permissions, generics
 
 from .serializers import TodoSerializer, YelpSerializer
@@ -19,8 +19,8 @@ import json
 
 from .requestHelpers import yelp_get_request
 
-# client = MongoClient(MONGODB_CONFIG)
-# db = client.pickeats # TODO: Change this to actual mongodb database name
+client = MongoClient()
+db = client.pickeats # TODO: Change this to actual mongodb database name
 
 """
 Example view that queries mongodb
@@ -100,6 +100,21 @@ def constructYelpParams(user):
     }
     return params
 
+def processYelpRequest(res, user):
+    businesses = []
+    try:
+        businesses = res.json()["businesses"]
+    except:
+        print("Bad request returned")
+        return
+
+    for business in businesses:
+        print("inserting business, user_id=", user.id)
+        print("name: ", business['name'])
+        business['user_id'] = user.id
+        key = { "user_id": user.id, "id": business["id"] }
+        db.reviews.update_one(key, {'$set': business}, upsert=True) # Inserts if does not exist, to query use [d for d in db.reviews.find({})]
+
 @api_view(['GET', 'POST'])
 def YelpDataList(request):
 
@@ -107,7 +122,17 @@ def YelpDataList(request):
         print("AUTHENTICATED USER", request.user.is_authenticated)
         print(request.user.profile)
         params = constructYelpParams(request.user)
-        return HttpResponse(yelp_get_request(url_params=params), content_type='application/json')
+
+        results = yelp_get_request(url_params=params)
+
+        processYelpRequest(results, request.user)
+
+        # if cached:
+            # get from db
+        # else:
+            # otherwise query yelp api
+
+        return HttpResponse(results, content_type='application/json')
     else:
         print("Anon user")
 
