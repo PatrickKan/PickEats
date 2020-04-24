@@ -49,8 +49,7 @@ import StarRatings from 'react-star-ratings';
 
 class RecPage extends Component {
   componentDidMount() {
-    // this.props.getTodos();
-    this.props.getRecommendations();
+    this.props.getRecommendations(0); // TODO: Set offset equal to a variable offset stored in state
   }
 
   metersToMiles(meters) {

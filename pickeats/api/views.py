@@ -168,7 +168,6 @@ def YelpDataList(request):
         if cachedQuery.count() > 0:
             print("cachedQuery")
             cachedBusinesses = [business for business in cachedQuery]
-            print("businesses", cachedBusinesses)
             results = {'businesses': cachedBusinesses} # Wrap 'business'
             return Response(results, content_type='application/json')
         else:
@@ -190,19 +189,3 @@ def YelpDataList(request):
         return HttpResponse(yelp_get_request(), content_type='application/json')
     else: 
         return Response("Please make a valid request.")
-    # else:
-    #     handleYelpPost(request)
-    #     yelpSer = YelpSerializer(data=request.data)
-
-    #     if yelpSer.is_valid():
-    #         return Response(json.loads(request.body))
-    #     else:
-    #         return Response("Please send a valid payload.")
-
-from bson import ObjectId
-
-class JSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        return json.JSONEncoder.default(self, o)
