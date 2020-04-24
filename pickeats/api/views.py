@@ -79,13 +79,35 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 
 
 
-class ProfileView(generics.RetrieveUpdateAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
+class ProfileView(APIView):#(generics.RetrieveUpdateAPIView):
+    # queryset = Profile.objects.all()
+    # serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user.profile
+    # Django Rest Framework version of SQL queries:
+    # def get_object(self):
+    #     return self.request.user.profile
+    def get(self, request, format=None):
+        queryset = Profile.objects.raw("SELECT * FROM pickeats_profile WHERE user_id = %s", [request.user.id])
+        return Response(ProfileSerializer(queryset, many=True).data[0])
+
+    def patch(self, request):
+        with connection.cursor() as cursor:
+            if 'latitude' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET latitude = %s WHERE user_id = %s", [request.data.get('latitude'), request.user.id])
+            if 'longitude' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET longitude = %s WHERE user_id = %s", [request.data.get('longitude'), request.user.id])
+            if 'radius' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET radius = %s WHERE user_id = %s", [request.data.get('radius'), request.user.id])
+            if 'price_1' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET price_1 = %s WHERE user_id = %s", [request.data.get('price_1')=='true', request.user.id])
+            if 'price_2' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET price_2 = %s WHERE user_id = %s", [request.data.get('price_2')=='true', request.user.id])
+            if 'price_3' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET price_3 = %s WHERE user_id = %s", [request.data.get('price_3')=='true', request.user.id])
+            if 'price_4' in request.data:
+                cursor.execute("UPDATE pickeats_profile SET price_4 = %s WHERE user_id = %s", [request.data.get('price_4')=='true', request.user.id])
+        return self.get(request)
 
 
 class AllergyViewSet(viewsets.ModelViewSet):
