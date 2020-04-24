@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PickeatsCreate from './PickeatsCreate';
 import PickeatsList from './PickeatsList';
+import PickeatsCheckbox from './PickeatsCheckbox'
 
 import { Card, Header } from 'semantic-ui-react'
 
@@ -30,6 +31,12 @@ class Dashboard extends Component {
               <Header size='medium'>🙅‍♀️ Do you have any allergies?</Header>
               <PickeatsCreate type='allergies'/>
               <PickeatsList type='allergies'/>
+            </Card.Content>
+          </Card>
+          <Card fluid>
+            <Card.Content>
+              <Header size='medium'>🙅‍♀️ How much are you willing to spend?</Header>
+              <PickeatsCheckbox type='profile'/>
             </Card.Content>
           </Card>
         </Card.Group>

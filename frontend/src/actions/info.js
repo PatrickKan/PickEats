@@ -63,3 +63,4 @@ export const editInfo = (type, id, formValues) => async (dispatch, getState) => 
   });
   history.push('/profile');
 };
+
