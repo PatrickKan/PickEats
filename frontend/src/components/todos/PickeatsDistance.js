@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addInfo } from '../../actions/info';
-import { PickeatsForm } from 'PickeatsForm'
+import { TodoForm } from './TodoForm'
 
 class PickeatsDistance extends Component {
   onSubmit = formValues => {
