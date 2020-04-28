@@ -24,18 +24,22 @@ Django REST framework documentation here: https://www.django-rest-framework.org/
     * User /user (requires auth, accesses logged in user's info)
         * GET, POST /prefers/
             * Gets all preferences, or creates a preference
+            * Clears all current cached recommendations for a user on POST
         * GET, PUT, DELETE /prefers/(preference id)/
             * Gets, updates, or deletes a preference
+            * Clears all current cached recommendations for a user on PUT and DELETE
         * GET, PUT, PATCH /profile/
             * Gets, updates, or partially updates {latitude, longitude, radius, price} preferences of a user
             * Planned: update cached restaurants (maybe)
+            * Clears all current cached recommendations for a user
         * /goals/, /goals/(goal id)/
             * Same as /prefers/
         * /allergies/, /allergies/(allergy id)/
             * Same as /prefers/
-    * Restaurants /recs 
-        * Planned:
-        * GET / (hashed user id) (batch number)
+    * Restaurants /yelp
+        * GET /?offset=<int>
             * Get a batch of recommendations for specific user
-        * POST / (hashed user id)
+            * Use offset as query parameter as an integer, passed in from frontend
+        * Planned:
+        * POST / 
             * Store the yes/no based on user?
