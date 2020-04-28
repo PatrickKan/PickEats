@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'pickeatscrud.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    # Code depends on DATABASES['default']['ENGINE'] to use sqlite vs mysql appropriate SQL.
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
