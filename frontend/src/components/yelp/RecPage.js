@@ -47,17 +47,15 @@ import { FaUtensils } from "react-icons/fa";
 import { Rating, Card } from 'semantic-ui-react';
 import StarRatings from 'react-star-ratings';
 
-import { Form, Grid, List, Transition } from 'semantic-ui-react'
+import { Form, Grid, List, Dimmer, Loader, Transition } from 'semantic-ui-react'
 
 class RecPage extends Component {
   state = {
     index: 0,
+    loading: true
   }
   componentDidMount() {
-    this.props.getRecommendations(0).then(() => {
-      // console.log("force updating")
-      // this.forceUpdate();
-    });
+    this.props.getRecommendations(0).then(()=>this.setState({loading: false}));
     // this.forceUpdate();
     // console.log(this.props.recs) // TODO: Set offset equal to a variable offset stored in state
     // this.forceUpdate();
@@ -78,8 +76,9 @@ class RecPage extends Component {
   handleNext = () =>
     this.setState((prevState) => {
       if (prevState.index + 1 >= this.props.recs.length) {
-        this.props.getRecommendations(this.props.recs.length);
+        this.props.getRecommendations(this.props.recs.length).then(()=>this.setState({loading: false}));
         console.log('next offset: ' + this.props.recs.length);
+        return { index: prevState.index + 1, loading: true};
       }
       return { index: prevState.index + 1};
     })
@@ -129,13 +128,19 @@ class RecPage extends Component {
                 animation="browse"
                 duration={500}
               > */}
-                {<List.Item key={this.state.index}>
+                <List.Item key={this.state.index}>
                   <List.Content>
+                  {this.state.loading ?
+                  <div className='ui cards' style={{ marginTop: '2rem' }}><div className='ui card' style={{paddingTop: '25rem'}} key={1}><div className="content">
+                    <Dimmer active inverted>
+                      <Loader inverted content='Loading' />
+                    </Dimmer>
+                  </div></div></div>:
                   <div className='ui cards' style={{ marginTop: '2rem' }}>
                     {this.state.index < this.props.recs.length ? this.renderRec(this.props.recs[this.state.index]) : null}
-                  </div>
+                  </div>}
                   </List.Content>
-                </List.Item>}
+                </List.Item>
               {/* </Transition.Group> */}
             </Grid.Column>
             <Grid.Column>
