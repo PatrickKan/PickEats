@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getInfos, deleteInfo } from '../../actions/info';
+import { resetIndex } from '../../actions/recInfo'
 
 import { Label, Icon, Popup } from 'semantic-ui-react';
 import PickeatsEdit from './PickeatsEdit';
@@ -54,6 +55,8 @@ class PickeatsCheckbox extends Component {
       console.log(response);
     });
 
+    this.props.resetIndex();
+
   }
 
   toggle2 = () =>{
@@ -77,6 +80,8 @@ class PickeatsCheckbox extends Component {
     axios.patch('/api/user/profile/', body2, config).then(function (response) { 
       console.log(response);
     });
+
+    this.props.resetIndex();
 
   }
 
@@ -102,6 +107,8 @@ class PickeatsCheckbox extends Component {
       console.log(response);
     });
 
+    this.props.resetIndex();
+
   }
 
   toggle4 = () =>{
@@ -125,6 +132,8 @@ class PickeatsCheckbox extends Component {
     axios.patch('/api/user/profile/', body4, config).then(function (response) { 
       console.log(response);
     });
+
+    this.props.resetIndex();
 
   }
 
@@ -167,5 +176,5 @@ const mapStateToProps = (state, ownProps) => ({
 
 export default connect(
   mapStateToProps,
-  { getInfos, deleteInfo }
+  { getInfos, deleteInfo, resetIndex }
 )(PickeatsCheckbox);

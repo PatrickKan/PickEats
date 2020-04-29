@@ -57,7 +57,6 @@ class RecPage extends Component {
   componentDidMount() {
     this.props.getRecommendations(0).then(()=>this.setState({loading: false}));
     this.props.updateIndex(0);
-    console.log('mount' + this.props.index);
     // this.forceUpdate();
     // console.log(this.props.recs) // TODO: Set offset equal to a variable offset stored in state
     // this.forceUpdate();
@@ -161,7 +160,7 @@ class RecPage extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  recs: ownProps.recs ? ownProps.recs.concat(Object.values(state.todos)) : Object.values(state.todos),
+  recs: Object.values(state.recInfo.businesses),
   index: state.recInfo.index
 });
 

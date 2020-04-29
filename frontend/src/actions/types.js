@@ -5,7 +5,7 @@ export const DELETE_TODO = 'DELETE_TODO';
 export const EDIT_TODO = 'EDIT_TODO';
 export const GET_RECS = 'GET_RECS';
 export const POST_PREFERENCES = 'POST_PREFERENCES';
-export const VIEW_INDEX = 'VIEW_INDEX';
+export const RESET_INDEX = 'RESET_INDEX';
 export const UPDATE_INDEX = 'UPDATE_INDEX';
 
 export const USER_LOADING = 'USER_LOADING';

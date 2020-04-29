@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addInfo } from '../../actions/info';
+import { resetIndex } from '../../actions/recInfo'
 import TodoForm from './TodoForm'
 import axios from 'axios';
 
@@ -30,6 +31,8 @@ class PickeatsDistance extends Component {
       console.log(response);
     });
 
+    this.props.resetIndex();
+
   };
 
   render() {
@@ -43,5 +46,5 @@ class PickeatsDistance extends Component {
 
 export default connect(
   null,
-  { addInfo }
+  { addInfo, resetIndex }
 )(PickeatsDistance);

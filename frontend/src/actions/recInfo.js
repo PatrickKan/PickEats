@@ -1,4 +1,4 @@
-import { VIEW_INDEX, UPDATE_INDEX } from './types';
+import { RESET_INDEX, UPDATE_INDEX } from './types';
 
 export const updateIndex = (incrementBy) => {
     return {
@@ -7,8 +7,8 @@ export const updateIndex = (incrementBy) => {
     }
   };
   
-  export const viewIndex = () => {
+  export const resetIndex = () => {
     return {
-      type: VIEW_INDEX
+      type: RESET_INDEX
     }
   };
