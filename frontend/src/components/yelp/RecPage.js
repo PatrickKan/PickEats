@@ -52,10 +52,12 @@ import { Button, List, Dimmer, Loader, Transition } from 'semantic-ui-react'
 
 class RecPage extends Component {
   state = {
-    loading: true
+    loading: true,
+    noMore: false,
+    length: 0
   }
   componentDidMount() {
-    this.props.getRecommendations(0).then(()=>this.setState({loading: false}));
+    this.props.getRecommendations(0).then(()=>this.setState({loading: false, length: this.props.recs.length}));
     this.props.updateIndex(0);
     // this.forceUpdate();
     // console.log(this.props.recs) // TODO: Set offset equal to a variable offset stored in state
@@ -77,12 +79,24 @@ class RecPage extends Component {
   
   handleNext = () => {
     if (this.props.index + 1 >= this.props.recs.length) {
-      this.props.getRecommendations(this.props.recs.length).then(()=>this.setState({loading: false}));
+      this.props.getRecommendations(this.props.recs.length)
+        .then(()=>this.setState({loading: false}))
+        .then(()=>this.setState((prevState) => this.props.recs.length > prevState.length ? {length: this.props.recs.length} : {noMore: true}));
       console.log('next offset: ' + this.props.recs.length);
       this.setState({loading: true})
     }
     this.props.updateIndex(1);
   };
+
+  renderNoMore() {
+    return (<div className='ui cards' style={{ marginTop: '2rem' }}>
+      <div className='ui centered card' style={{paddingTop: '12.5rem', paddingBottom: '12.5rem'}} key={1}>
+        <div className="content" style={{textAlign: 'center'}}>
+          <div className="header">No more restaurants 😫😢🤭</div>
+        </div>
+      </div>
+    </div>);
+  }
 
   renderRec(rec) {
     return (
@@ -126,15 +140,18 @@ class RecPage extends Component {
         > */}
           <List.Item key={this.props.index}>
             <List.Content>
-            {this.state.loading ?
+            {this.state.noMore && this.props.index >= this.state.length ?
+            this.renderNoMore():
+            this.state.loading ?
             <div className='ui cards' style={{ marginTop: '2rem' }}><div className='ui centered card' style={{paddingTop: '25rem'}} key={1}><div className="content">
               <Dimmer active inverted>
                 <Loader inverted content='Loading' />
               </Dimmer>
             </div></div></div>:
+            <div>
             <div className='ui cards' style={{ marginTop: '2rem' }} >
               {this.props.index < this.props.recs.length ? this.renderRec(this.props.recs[this.props.index]) : null}
-            </div>}
+            </div></div>}
             </List.Content>
           </List.Item>
         {/* </Transition.Group> */}
@@ -145,11 +162,13 @@ class RecPage extends Component {
               icon='caret left'
               size='big'
               onClick={this.handlePrevious}
+              disabled={this.props.index<=0}
             />
             <Button
               icon='caret right'
               size='big'
               onClick={this.handleNext}
+              disabled={this.state.noMore && this.props.index == this.state.length}
             />
           </Button.Group>
         </div>
