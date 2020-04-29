@@ -96,17 +96,19 @@ class ProfileView(APIView):#(generics.RetrieveUpdateAPIView):
 
     def patch(self, request):
         
-        if ('latitude' and 'longitude') in request.data:
+        if ('longitude' in request.data) or ('latitude' in request.data) :
             # Make sure longitude and latitude are different by a given tolerance (due to floating point precision)
             if abs(request.data.get('longitude') - float(request.user.profile.longitude)) > 0.0001 and abs(request.data.get('latitude') - float(request.user.profile.latitude)) > 0.0001:
+                print("changed location")
                 print("request ", request.user.profile.longitude, " " ,request.user.profile.latitude)
                 print("user ", request.data.get('longitude'), " " ,request.data.get('latitude'))
                 db.reviews.delete_many({'user_id': request.user.id})
-        
-        if ('radius' or 'price_1' or 'price_2' or 'price_3' or 'price_4') in request.data:
-            print("ENTERED OR")
+
+        if ('radius' in request.data) or ('price_1' in request.data) or ('price_2' in request.data) or ('price_3' in request.data) or ('price_4' in request.data):
+            print("updated radius or price")
+            print(request.data)
             db.reviews.delete_many({'user_id': request.user.id})
-        
+
         with connection.cursor() as cursor:
             if 'latitude' in request.data:
                 cursor.execute("UPDATE pickeats_profile SET latitude = %s WHERE user_id = %s", [request.data.get('latitude'), request.user.id])
@@ -115,13 +117,13 @@ class ProfileView(APIView):#(generics.RetrieveUpdateAPIView):
             if 'radius' in request.data:
                 cursor.execute("UPDATE pickeats_profile SET radius = %s WHERE user_id = %s", [request.data.get('radius'), request.user.id])
             if 'price_1' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_1 = %s WHERE user_id = %s", [request.data.get('price_1')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_1 = %s WHERE user_id = %s", [request.data.get('price_1'), request.user.id])
             if 'price_2' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_2 = %s WHERE user_id = %s", [request.data.get('price_2')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_2 = %s WHERE user_id = %s", [request.data.get('price_2'), request.user.id])
             if 'price_3' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_3 = %s WHERE user_id = %s", [request.data.get('price_3')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_3 = %s WHERE user_id = %s", [request.data.get('price_3'), request.user.id])
             if 'price_4' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_4 = %s WHERE user_id = %s", [request.data.get('price_4')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_4 = %s WHERE user_id = %s", [request.data.get('price_4'), request.user.id])
         return self.get(request)
 
 

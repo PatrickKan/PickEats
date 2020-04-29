@@ -49,7 +49,13 @@ import StarRatings from 'react-star-ratings';
 
 class RecPage extends Component {
   componentDidMount() {
-    this.props.getRecommendations(0); // TODO: Set offset equal to a variable offset stored in state
+    this.props.getRecommendations(0).then(() => {
+      // console.log("force updating")
+      // this.forceUpdate();
+    });
+    // this.forceUpdate();
+    // console.log(this.props.recs) // TODO: Set offset equal to a variable offset stored in state
+    // this.forceUpdate();
   }
 
   metersToMiles(meters) {
@@ -72,8 +78,8 @@ class RecPage extends Component {
                   <img style={this.imgStyle} src={rec.image_url}/>
                 </div>
                 <div className='content'>
-                  <div class="header">{rec.name}</div>
-                  <div class="meta">{rec.price}</div>
+                  <div className="header">{rec.name}</div>
+                  <div className="meta">{rec.price}</div>
                   <div className='description'><FaUtensils/>{"  " + rec.location.address1 + " "}</div>
                   <div className='description'>
                     {rec.rating.toFixed(1) + " "}  
@@ -87,7 +93,7 @@ class RecPage extends Component {
                     />
                     {" " + rec.review_count + "  reviews"}</div>
                 </div>
-                <div class="extra content">
+                <div className="extra content">
                   <a>
                     {this.metersToMiles(rec.distance) + " miles away"} 
                   </a>
