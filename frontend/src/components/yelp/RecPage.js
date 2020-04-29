@@ -40,22 +40,24 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getTodos, deleteTodo } from '../../actions/todos';
-import { getRecommendations } from '../../actions/yelp';
+import { getRecommendations} from '../../actions/yelp';
+import { updateIndex } from '../../actions/recInfo'
 import { geolocated } from "react-geolocated";
 import LocationTracker from './Location';
 import { FaUtensils } from "react-icons/fa";
 import { Rating, Card } from 'semantic-ui-react';
 import StarRatings from 'react-star-ratings';
 
-import { Form, Grid, List, Dimmer, Loader, Transition } from 'semantic-ui-react'
+import { Button, List, Dimmer, Loader, Transition } from 'semantic-ui-react'
 
 class RecPage extends Component {
   state = {
-    index: 0,
     loading: true
   }
   componentDidMount() {
     this.props.getRecommendations(0).then(()=>this.setState({loading: false}));
+    this.props.updateIndex(0);
+    console.log('mount' + this.props.index);
     // this.forceUpdate();
     // console.log(this.props.recs) // TODO: Set offset equal to a variable offset stored in state
     // this.forceUpdate();
@@ -70,23 +72,23 @@ class RecPage extends Component {
       objectFit: "cover"
   }
 
-  handlePrevious = () =>
-    this.setState((prevState) => prevState.index > 0 ? { index: prevState.index - 1} : {index: 0})
+  handlePrevious = () => {
+    return this.props.index > 0 ? this.props.updateIndex(-1) : null
+  }
   
-  handleNext = () =>
-    this.setState((prevState) => {
-      if (prevState.index + 1 >= this.props.recs.length) {
-        this.props.getRecommendations(this.props.recs.length).then(()=>this.setState({loading: false}));
-        console.log('next offset: ' + this.props.recs.length);
-        return { index: prevState.index + 1, loading: true};
-      }
-      return { index: prevState.index + 1};
-    })
+  handleNext = () => {
+    if (this.props.index + 1 >= this.props.recs.length) {
+      this.props.getRecommendations(this.props.recs.length).then(()=>this.setState({loading: false}));
+      console.log('next offset: ' + this.props.recs.length);
+      this.setState({loading: true})
+    }
+    this.props.updateIndex(1);
+  };
 
   renderRec(rec) {
     return (
       rec.name ? 
-      ( <div className='ui card' key={rec.id}>
+      ( <div className='ui centered card' key={rec.id}>
           <div className="image">
             <img style={this.imgStyle} src={rec.image_url}/>
           </div>
@@ -118,56 +120,40 @@ class RecPage extends Component {
   render() {
     return (
       <div>
-        <Grid>
-          <Grid.Row columns={3}>
-            <Grid.Column>
-            </Grid.Column>
-            <Grid.Column>
-              {/* <Transition.Group
-                as={List}
-                animation="browse"
-                duration={500}
-              > */}
-                <List.Item key={this.state.index}>
-                  <List.Content>
-                  {this.state.loading ?
-                  <div className='ui cards' style={{ marginTop: '2rem' }}><div className='ui card' style={{paddingTop: '25rem'}} key={1}><div className="content">
-                    <Dimmer active inverted>
-                      <Loader inverted content='Loading' />
-                    </Dimmer>
-                  </div></div></div>:
-                  <div className='ui cards' style={{ marginTop: '2rem' }}>
-                    {this.state.index < this.props.recs.length ? this.renderRec(this.props.recs[this.state.index]) : null}
-                  </div>}
-                  </List.Content>
-                </List.Item>
-              {/* </Transition.Group> */}
-            </Grid.Column>
-            <Grid.Column>
-            </Grid.Column>
-          </Grid.Row>
+        {/* <Transition.Group
+          as={List}
+          animation="browse"
+          duration={500}
+        > */}
+          <List.Item key={this.props.index}>
+            <List.Content>
+            {this.state.loading ?
+            <div className='ui cards' style={{ marginTop: '2rem' }}><div className='ui centered card' style={{paddingTop: '25rem'}} key={1}><div className="content">
+              <Dimmer active inverted>
+                <Loader inverted content='Loading' />
+              </Dimmer>
+            </div></div></div>:
+            <div className='ui cards' style={{ marginTop: '2rem' }} >
+              {this.props.index < this.props.recs.length ? this.renderRec(this.props.recs[this.props.index]) : null}
+            </div>}
+            </List.Content>
+          </List.Item>
+        {/* </Transition.Group> */}
 
-          <Grid.Row columns={6}>
-            <Grid.Column/>
-            <Grid.Column/>
-
-            <Grid.Column textAlign='center'>
-              <Form.Button
-                content="Previous"
-                onClick={this.handlePrevious}
-              />
-            </Grid.Column>
-            <Grid.Column textAlign='left'>
-              <Form.Button
-                content="Next"
-                onClick={this.handleNext}
-              />
-            </Grid.Column>
-
-            <Grid.Column/>
-            <Grid.Column/>
-          </Grid.Row>
-        </Grid>
+        <div style={{textAlign: 'center', marginTop:'2rem'}}>
+          <Button.Group basic>
+            <Button
+              icon='caret left'
+              size='big'
+              onClick={this.handlePrevious}
+            />
+            <Button
+              icon='caret right'
+              size='big'
+              onClick={this.handleNext}
+            />
+          </Button.Group>
+        </div>
         <LocationTracker/>
       </div>
     );
@@ -175,10 +161,11 @@ class RecPage extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  recs: ownProps.recs ? ownProps.recs.concat(Object.values(state.todos)) : Object.values(state.todos)
+  recs: ownProps.recs ? ownProps.recs.concat(Object.values(state.todos)) : Object.values(state.todos),
+  index: state.recInfo.index
 });
 
 export default connect(
   mapStateToProps,
-  { getRecommendations }
+  { getRecommendations, updateIndex }
 )(RecPage);
