@@ -51,6 +51,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         return Response(PreferenceSerializer(queryset, many=True).data)
 
     def create(self, request):
+        db.reviews.delete_many({'user_id': request.user.id})
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO pickeats_preference (description, user_id) VALUES (%s, %s)", [request.data['description'], request.user.id])
             if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
@@ -67,12 +68,14 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         return Response(PreferenceSerializer(queryset, many=True).data[0])
 
     def partial_update(self, request, pk=None):
+        db.reviews.delete_many({'user_id': request.user.id})
         with connection.cursor() as cursor:
             cursor.execute("UPDATE pickeats_preference SET description = %s WHERE user_id = %s AND id = %s", [request.data['description'], request.user.id, pk])
         queryset = Preference.objects.raw("SELECT * FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
         return Response(PreferenceSerializer(queryset, many=True).data[0])
 
     def destroy(self, request, pk=None):
+        db.reviews.delete_many({'user_id': request.user.id})
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
         return Response()
@@ -92,6 +95,20 @@ class ProfileView(APIView):#(generics.RetrieveUpdateAPIView):
         return Response(ProfileSerializer(queryset, many=True).data[0])
 
     def patch(self, request):
+        
+        if ('longitude' in request.data) or ('latitude' in request.data) :
+            # Make sure longitude and latitude are different by a given tolerance (due to floating point precision)
+            if abs(request.data.get('longitude') - float(request.user.profile.longitude)) > 0.0001 and abs(request.data.get('latitude') - float(request.user.profile.latitude)) > 0.0001:
+                print("changed location")
+                print("request ", request.user.profile.longitude, " " ,request.user.profile.latitude)
+                print("user ", request.data.get('longitude'), " " ,request.data.get('latitude'))
+                db.reviews.delete_many({'user_id': request.user.id})
+
+        if ('radius' in request.data) or ('price_1' in request.data) or ('price_2' in request.data) or ('price_3' in request.data) or ('price_4' in request.data):
+            print("updated radius or price")
+            print(request.data)
+            db.reviews.delete_many({'user_id': request.user.id})
+
         with connection.cursor() as cursor:
             if 'latitude' in request.data:
                 cursor.execute("UPDATE pickeats_profile SET latitude = %s WHERE user_id = %s", [request.data.get('latitude'), request.user.id])
@@ -100,13 +117,13 @@ class ProfileView(APIView):#(generics.RetrieveUpdateAPIView):
             if 'radius' in request.data:
                 cursor.execute("UPDATE pickeats_profile SET radius = %s WHERE user_id = %s", [request.data.get('radius'), request.user.id])
             if 'price_1' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_1 = %s WHERE user_id = %s", [request.data.get('price_1')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_1 = %s WHERE user_id = %s", [request.data.get('price_1'), request.user.id])
             if 'price_2' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_2 = %s WHERE user_id = %s", [request.data.get('price_2')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_2 = %s WHERE user_id = %s", [request.data.get('price_2'), request.user.id])
             if 'price_3' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_3 = %s WHERE user_id = %s", [request.data.get('price_3')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_3 = %s WHERE user_id = %s", [request.data.get('price_3'), request.user.id])
             if 'price_4' in request.data:
-                cursor.execute("UPDATE pickeats_profile SET price_4 = %s WHERE user_id = %s", [request.data.get('price_4')=='true', request.user.id])
+                cursor.execute("UPDATE pickeats_profile SET price_4 = %s WHERE user_id = %s", [request.data.get('price_4'), request.user.id])
         return self.get(request)
 
 
@@ -219,9 +236,11 @@ def handleYelpPost(request):
 def removeLeadingComma(origStr):
     if len(origStr) > 0 and origStr[0] == ',':
         origStr = origStr[1:]
+    elif len(origStr) == 0:
+        origStr = "1,2,3,4"
     return origStr
 
-def constructYelpParams(user):
+def constructYelpParams(user, offset):
     profile = user.profile
     priceString = ""
     priceString += ("1" if profile.price_1 else "")
@@ -251,15 +270,18 @@ def constructYelpParams(user):
         'latitude': profile.latitude,
         'price': priceString,
         'radius': profile.radius,
-        'categories': categoryString
+        'categories': categoryString,
+        'limit': 50,
+        'offset': offset*50
     }
     return params
 
-def processYelpRequest(res, user):
+def cacheYelpRequest(res, user, offset):
     businesses = []
     try:
         businesses = res.json()["businesses"]
     except:
+        print(res.json())
         print("Bad request returned")
         return
 
@@ -267,21 +289,36 @@ def processYelpRequest(res, user):
         print("inserting business, user_id=", user.id)
         print("name: ", business['name'])
         business['user_id'] = user.id
+        business['offset'] = offset
         key = { "user_id": user.id, "id": business["id"] }
         db.reviews.update_one(key, {'$set': business}, upsert=True) # Inserts if does not exist, to query use [d for d in db.reviews.find({})]
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def YelpDataList(request):
 
     if request.user.is_authenticated and request.method == 'GET':
         print("AUTHENTICATED USER", request.user.is_authenticated)
         print(request.user.profile)
-        params = constructYelpParams(request.user)
 
-        results = yelp_get_request(url_params=params)
+        try:
+            offset = request.GET["offset"]
+        except:
+            offset = 0
+        params = constructYelpParams(request.user, offset)
 
-        processYelpRequest(results, request.user)
+        cachedQuery = db.reviews.find({'user_id': request.user.id, 'offset': offset}, {'_id': 0})
 
+        if cachedQuery.count() > 0:
+            print("cachedQuery")
+            cachedBusinesses = [business for business in cachedQuery]
+            results = {'businesses': cachedBusinesses} # Wrap 'business'
+            return Response(results, content_type='application/json')
+        else:
+            print("GET from yelp")
+            results = yelp_get_request(url_params=params)
+            cacheYelpRequest(results, request.user, offset)
+            return HttpResponse(results, content_type='application/json')
+        
         # if cached:
             # get from db
         # else:
@@ -295,11 +332,3 @@ def YelpDataList(request):
         return HttpResponse(yelp_get_request(), content_type='application/json')
     else: 
         return Response("Please make a valid request.")
-    # else:
-    #     handleYelpPost(request)
-    #     yelpSer = YelpSerializer(data=request.data)
-
-    #     if yelpSer.is_valid():
-    #         return Response(json.loads(request.body))
-    #     else:
-    #         return Response("Please send a valid payload.")
