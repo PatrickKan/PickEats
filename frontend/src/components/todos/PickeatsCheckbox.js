@@ -26,7 +26,7 @@ class PickeatsCheckbox extends Component {
     axios.get(`/api/user/profile`, config)
       .then(res => {
         this.setState({radius: res.data.radius, price_1:res.data.price_1, price_2:res.data.price_2, price_3:res.data.price_3, price_4:res.data.price_4 });
-      })
+    })
   }
 
   toggle1 = () =>{

@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addInfo } from '../../actions/info';
-import { TodoForm } from './TodoForm'
+import TodoForm from './TodoForm'
+import axios from 'axios';
 
 class PickeatsDistance extends Component {
   onSubmit = formValues => {
-
+    console.log(formValues);
     const body = {
-      radius: Math.round(formValues * 1609.34),
+
+      radius: Math.round(parseFloat(formValues.description)*1609.34),
 
     }
     const config = {
@@ -21,6 +23,8 @@ class PickeatsDistance extends Component {
     if (token) {
       config.headers['Authorization'] = `Token ${token}`;
     }
+    console.log("radius");
+    console.log(body.radius);
 
     axios.patch('/api/user/profile/', body, config).then(function (response) { 
       console.log(response);
@@ -31,7 +35,7 @@ class PickeatsDistance extends Component {
   render() {
     return (
       <div style={{ marginTop: '2rem' }}>
-        <PickeatsForm destroyOnUnmount={false} onSubmit={this.onSubmit} form={'create' + this.props.type}/>
+        <TodoForm destroyOnUnmount={false} onSubmit={this.onSubmit} form={'create' + this.props.type}/>
       </div>
     );
   }
@@ -40,4 +44,4 @@ class PickeatsDistance extends Component {
 export default connect(
   null,
   { addInfo }
-)(PickeatsCreate);
+)(PickeatsDistance);
