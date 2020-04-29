@@ -51,6 +51,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         return Response(PreferenceSerializer(queryset, many=True).data)
 
     def create(self, request):
+        db.reviews.delete_many({'user_id': request.user.id})
         with connection.cursor() as cursor:
             cursor.execute("INSERT INTO pickeats_preference (description, user_id) VALUES (%s, %s)", [request.data['description'], request.user.id])
             if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
@@ -67,12 +68,14 @@ class PreferenceViewSet(viewsets.ModelViewSet):
         return Response(PreferenceSerializer(queryset, many=True).data[0])
 
     def partial_update(self, request, pk=None):
+        db.reviews.delete_many({'user_id': request.user.id})
         with connection.cursor() as cursor:
             cursor.execute("UPDATE pickeats_preference SET description = %s WHERE user_id = %s AND id = %s", [request.data['description'], request.user.id, pk])
         queryset = Preference.objects.raw("SELECT * FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
         return Response(PreferenceSerializer(queryset, many=True).data[0])
 
     def destroy(self, request, pk=None):
+        db.reviews.delete_many({'user_id': request.user.id})
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM pickeats_preference WHERE user_id = %s AND id = %s", [request.user.id, pk])
         return Response()
@@ -92,6 +95,18 @@ class ProfileView(APIView):#(generics.RetrieveUpdateAPIView):
         return Response(ProfileSerializer(queryset, many=True).data[0])
 
     def patch(self, request):
+        
+        if ('latitude' and 'longitude') in request.data:
+            # Make sure longitude and latitude are different by a given tolerance (due to floating point precision)
+            if abs(request.data.get('longitude') - float(request.user.profile.longitude)) > 0.0001 and abs(request.data.get('latitude') - float(request.user.profile.latitude)) > 0.0001:
+                print("request ", request.user.profile.longitude, " " ,request.user.profile.latitude)
+                print("user ", request.data.get('longitude'), " " ,request.data.get('latitude'))
+                db.reviews.delete_many({'user_id': request.user.id})
+        
+        if ('radius' or 'price_1' or 'price_2' or 'price_3' or 'price_4') in request.data:
+            print("ENTERED OR")
+            db.reviews.delete_many({'user_id': request.user.id})
+        
         with connection.cursor() as cursor:
             if 'latitude' in request.data:
                 cursor.execute("UPDATE pickeats_profile SET latitude = %s WHERE user_id = %s", [request.data.get('latitude'), request.user.id])
@@ -219,6 +234,8 @@ def handleYelpPost(request):
 def removeLeadingComma(origStr):
     if len(origStr) > 0 and origStr[0] == ',':
         origStr = origStr[1:]
+    elif len(origStr) == 0:
+        origStr = "1,2,3,4"
     return origStr
 
 def constructYelpParams(user, offset):
@@ -262,6 +279,7 @@ def cacheYelpRequest(res, user, offset):
     try:
         businesses = res.json()["businesses"]
     except:
+        print(res.json())
         print("Bad request returned")
         return
 
