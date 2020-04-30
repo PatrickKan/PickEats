@@ -272,7 +272,7 @@ def constructYelpParams(user, offset):
         'radius': profile.radius,
         'categories': categoryString,
         'limit': 50,
-        'offset': offset*50
+        'offset': offset
     }
     return params
 

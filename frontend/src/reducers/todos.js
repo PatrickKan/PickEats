@@ -5,7 +5,6 @@ import {
   ADD_TODO,
   DELETE_TODO,
   EDIT_TODO,
-  GET_RECS,
   POST_PREFERENCES
 } from '../actions/types';
 
@@ -15,11 +14,6 @@ export default (state = {}, action) => {
       return {
         ...state,
         ..._.mapKeys(action.payload, (value, key)=>value.type+value.id),
-      };
-    case GET_RECS:
-      return {
-        ...state,
-        ..._.mapKeys(action.payload.businesses, 'id')
       };
     case GET_TODO:
       return {

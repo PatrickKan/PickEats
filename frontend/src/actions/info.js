@@ -2,7 +2,7 @@ import axios from 'axios';
 import { reset } from 'redux-form';
 import history from '../history';
 import { tokenConfig } from './auth';
-import { GET_TODOS, GET_TODO, ADD_TODO, DELETE_TODO, EDIT_TODO } from './types';
+import { GET_TODOS, GET_TODO, ADD_TODO, DELETE_TODO, EDIT_TODO, RESET_INDEX } from './types';
 
 // GET TODOS
 export const getInfos = (type) => async (dispatch, getState) => {
@@ -33,6 +33,9 @@ export const addInfo = (type, formValues) => async (dispatch, getState) => {
   );
   res.data['type'] = type;
   dispatch({
+    type: RESET_INDEX,
+  });
+  dispatch({
     type: ADD_TODO,
     payload: res.data
   });
@@ -42,6 +45,9 @@ export const addInfo = (type, formValues) => async (dispatch, getState) => {
 // DELETE TODO
 export const deleteInfo = (type, id) => async (dispatch, getState) => {
   await axios.delete(`/api/user/${type}/${id}/`, tokenConfig(getState));
+  dispatch({
+    type: RESET_INDEX,
+  });
   dispatch({
     type: DELETE_TODO,
     payload: type+id
@@ -57,6 +63,9 @@ export const editInfo = (type, id, formValues) => async (dispatch, getState) => 
     tokenConfig(getState)
   );
   res.data['type'] = type;
+  dispatch({
+    type: RESET_INDEX,
+  });
   dispatch({
     type: EDIT_TODO,
     payload: res.data
