@@ -5,7 +5,7 @@ import { tokenConfig } from './auth';
 import { GET_TODOS, GET_TODO, ADD_TODO, DELETE_TODO, EDIT_TODO } from './types';
 
 // GET TODOS
-export const getPrefs = () => async (dispatch, getState) => {
+export const getTodos = () => async (dispatch, getState) => {
   const res = await axios.get('/api/user/prefers/', tokenConfig(getState));
   dispatch({
     type: GET_TODOS,
