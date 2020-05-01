@@ -5,7 +5,7 @@ import { tokenConfig } from './auth';
 import { GET_TODOS, GET_TODO, ADD_TODO, DELETE_TODO, EDIT_TODO } from './types';
 
 // GET TODOS
-export const getTodos = () => async (dispatch, getState) => {
+export const getPrefs = () => async (dispatch, getState) => {
   const res = await axios.get('/api/user/prefers/', tokenConfig(getState));
   dispatch({
     type: GET_TODOS,
@@ -33,7 +33,7 @@ export const addTodo = formValues => async (dispatch, getState) => {
     type: ADD_TODO,
     payload: res.data
   });
-  dispatch(reset('todoForm')); // フォーム送信後、値をクリアする
+  dispatch(reset('todoForm'));
 };
 
 // DELETE TODO

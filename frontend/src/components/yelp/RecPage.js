@@ -59,9 +59,6 @@ class RecPage extends Component {
   componentDidMount() {
     this.props.getRecommendations(0).then(()=>this.setState({loading: false, length: this.props.recs.length}));
     this.props.updateIndex(0);
-    // this.forceUpdate();
-    // console.log(this.props.recs) // TODO: Set offset equal to a variable offset stored in state
-    // this.forceUpdate();
   }
 
   metersToMiles(meters) {
