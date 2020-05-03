@@ -1,5 +1,5 @@
 # PickEats
-Pick Restaraunts with the ease of a swipe
+Pick Restaraunts with the ease of a click
 
 ## Getting Started
 
