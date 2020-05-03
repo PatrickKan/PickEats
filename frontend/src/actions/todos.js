@@ -33,7 +33,7 @@ export const addTodo = formValues => async (dispatch, getState) => {
     type: ADD_TODO,
     payload: res.data
   });
-  dispatch(reset('todoForm')); // フォーム送信後、値をクリアする
+  dispatch(reset('todoForm'));
 };
 
 // DELETE TODO

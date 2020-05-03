@@ -64,7 +64,7 @@ class Dashboard extends Component {
           </Card>
           <Card fluid>
             <Card.Content>
-              <Header size='medium'>📍 Distance? Current distance: {this.state.radius} </Header>
+              <Header size='medium'>📍 How far are you willing to go? Current distance: {this.state.radius} miles.</Header>
               <PickeatsDistance type='profile'/>
             </Card.Content>
           </Card>

@@ -5,8 +5,6 @@ import { Router, Route, Switch } from 'react-router-dom';
 import history from '../history';
 import Header from './layout/Header';
 import Dashboard from './todos/Dashboard';
-import TodoDelete from './todos/TodoDelete';
-import TodoEdit from './todos/TodoEdit';
 
 import RegisterForm from './auth/RegisterForm';
 import LoginForm from './auth/LoginForm';
@@ -31,8 +29,6 @@ class App extends Component {
           <Switch>
             <PrivateRoute exact path='/' component={MainPage} />
             <Route exact path = '/profile' component={Dashboard} />
-            <Route exact path='/delete/:id' component={TodoDelete} />
-            <Route exact path='/edit/:id' component={TodoEdit} />
             <Route exact path='/register' component={RegisterForm} />
             <Route exact path='/login' component={LoginForm} />
             <Route exact path='/form' component={PickEatsForm} />
