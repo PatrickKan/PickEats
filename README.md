@@ -3,9 +3,20 @@ Pick Restaraunts with the ease of a click
 
 ## Getting Started
 
-Django REST framework documentation here: https://www.django-rest-framework.org/
+Install `pipenv` with `pip`, and run `pipenv install` to get the necessary packages. Run `pipenv shell` to enter the shell with the necessary packages installed.
+
+Run `npm install` to get the necessary npm frontend packages.
+
+## Running the project
+
+Run `python manage.py runserver` to run the project on localhost.
+
+To compile the frontend, leave a terminal with `npm run dev` running, and it will autocompile whenever any of the frontend files are saved.
 
 ## For Developers
+
+Django REST framework documentation here: https://www.django-rest-framework.org/
+
 * Endpoints /api
     * Authentication /auth
         * POST /register/
